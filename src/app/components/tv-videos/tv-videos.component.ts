@@ -63,6 +63,27 @@ export class TvVideosComponent implements OnInit, OnDestroy{
             this.videoBackgroundUrls = {};
             this.videoKeys.forEach((type) => {
               this.TVTypedVideos[type].forEach((vid: any, index: number) => {
+                this._DetailsService.getVideoChannel(vid.key).subscribe({
+                  next: (data) => {
+                    if (data.items.length > 0) {
+                      const videoDetails = data.items[0];
+                      this.TVTypedVideos[type][index] = {
+                        ...vid,
+                        channelInfo: {
+                          channelId: videoDetails.snippet.channelId,
+                          channelTitle: videoDetails.snippet.channelTitle,
+                          duration: this.convertDuration(videoDetails.contentDetails.duration)
+                        }
+                      };
+                    } else {
+                      console.log('No video found with that ID.');
+                    }
+                  }
+                });
+              });
+            });
+            this.videoKeys.forEach((type) => {
+              this.TVTypedVideos[type].forEach((vid: any, index: number) => {
                 const baseUrl = 'https://i.ytimg.com/vi/' + vid?.key;
                 const imageUrl720 = baseUrl + '/hq720.jpg';
                 const imageUrlDefault = baseUrl + '/hqdefault.jpg';
@@ -104,27 +125,6 @@ export class TvVideosComponent implements OnInit, OnDestroy{
           }
         });
       }
-    });
-    this.videoKeys.forEach((type) => {
-      this.TVTypedVideos[type].forEach((vid: any, index: number) => {
-        this._DetailsService.getVideoChannel(vid.key).subscribe({
-          next: (data) => {
-            if (data.items.length > 0) {
-              const videoDetails = data.items[0];
-              this.TVTypedVideos[type][index] = {
-                ...vid,
-                channelInfo: {
-                  channelId: videoDetails.snippet.channelId,
-                  channelTitle: videoDetails.snippet.channelTitle,
-                  duration: this.convertDuration(videoDetails.contentDetails.duration)
-                }
-              };
-            } else {
-              console.log('No video found with that ID.');
-            }
-          }
-        });
-      });
     });
   }
   setMediaActiveTab(tab: string) {

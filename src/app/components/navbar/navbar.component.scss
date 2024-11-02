@@ -1,0 +1,47 @@
+.logo{
+  color: #24baef;
+}
+.movie-types,.tv-types{
+  position: absolute;
+  z-index: 99999999999 !important;
+  width: 150px;
+  border-radius: 10px;
+  padding-block: 10px;
+  display: block;
+  background-color: #fff !important;
+}
+.movie-types ul li,.tv-types ul li{
+  padding: 10px;
+}
+.movie-types ul li:hover,.tv-types ul li:hover{
+  background-color: #9a9a9a;
+}
+.form-control{
+  width: 400px;
+}
+.search-div{
+  width:400px
+}
+//======================= media query =======================
+@media (max-width: 1200px) {
+  .search-div,.form-control{
+    width:300px
+  }  
+}
+@media (max-width: 991px) {
+  .search-div,.form-control{
+    width:100%
+  }
+  .mq-white{
+    background-color: #fff !important;
+  }
+  input::placeholder{
+    color: #000 !important;
+  }
+  .nav-link{
+    padding-left: 8px;
+  }
+  .nav-link:hover{
+    background-color: #001e2b;
+  }
+}

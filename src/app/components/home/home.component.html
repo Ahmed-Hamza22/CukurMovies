@@ -1,0 +1,89 @@
+<app-swiper></app-swiper>
+<section class="py-5 container-fluid">
+  <div class="row justify-content-evenly g-4">
+    @if (trendingMovies.length !== 0) {
+      <div class="col-lg-3 col-md-4 col-sm-6 col-6 d-flex justify-content-center flex-column">
+        <div class="line-top ms-md-5 "></div>
+        <div class="ms-md-5">
+          <h2 class="my-font">Trending<br>Movies<br>To Watch Now</h2>
+          <p class="text-white-50 m-0 mt-4">Most Movies Watched By This Week</p>
+        </div>
+        <div class="line-bottom mx-md-5"></div>
+        </div>
+    }
+    @for (movie of trendingMovies; track $index) {
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12 gap-4">
+        <div class="bg-card rounded-2 p-2">
+          <a class="position-relative d-block" [routerLink]="['/moviedetails', movie.id]">
+            <div class="myCard">
+              <img class="w-100 h-100 rounded-2" [src]="imgPrefix + movie.poster_path" onerror="this.src='./assets/images/glyphicons-basic-38-picture-grey.svg'" width="341.600px" height="512.400px" [alt]="movie.title" [title]="movie.title">
+              <!-- <div class="layer">Click For More Details</div> -->
+              <svg width="80" height="80" class="svg-progress">
+                <circle cx="40" cy="40" r="18" stroke="darkgray" stroke-width="3" stroke-opacity="0.1"/>
+                <circle cx="40" cy="40" fill="none" r="18"
+                  [attr.stroke]="
+                    (movie.vote_average | rating) >= 80 ? 'green'
+                  : (movie.vote_average | rating) >= 70 ? '#08de08'
+                  : (movie.vote_average | rating) >= 50 ? 'gold'
+                  : 'tomato'"
+                  stroke-width="3" stroke-linecap="round" pathLength="100"
+                  [attr.stroke-dashoffset]="movie.vote_average | progress"
+                  stroke-dasharray="100" transform-origin="40 40" transform="rotate(-90)"/>
+                <text x="29" y="45" fill="white" class="small"> {{movie.vote_average ? (movie.vote_average | rating)+'%' : 'NR' }} </text>
+              </svg>
+            </div>
+          </a>
+          <div class="text-center d-flex flex-column justify-content-center align-items-center">
+            <a [routerLink]="['/moviedetails', movie.id]"><h3 class="mt-2 entertainment-title title-hover h5 my-font">{{movie.title}}</h3></a>
+            <div class="d-flex justify-content-center align-items-center bg-card-body rounded-3 mq-overview">
+              <p class="m-0 text-white-50 rounded-3">{{movie.overview | term : 12}}...</p> 
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="row justify-content-evenly g-4 mt-5">
+    @if (trendingTV.length !== 0) {
+      <div class="col-lg-3 col-md-4 col-sm-6 col-6 d-flex justify-content-center flex-column">
+        <div class="line-top ms-md-5"></div>
+        <div class="ms-md-5">
+          <h2 class="my-font">Trending<br>TV Shows<br>To Watch Now</h2>
+          <p class="text-white-50 m-0 mt-4">Most Series Watched By This Week</p>
+        </div>
+        <div class="line-bottom mx-md-5"></div>
+        </div>
+    }
+    @for (tv of trendingTV; track $index) {
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12 gap-4">
+        <div class="bg-card rounded-2 p-2 position-relative">
+          <a [routerLink]="['/tvdetails', tv.id]">
+            <div class="position-relative myCard">
+              <img class="w-100 h-100 rounded-2" [src]="imgPrefix + tv.poster_path" onerror="this.src='./assets/images/glyphicons-basic-38-picture-grey.svg'" width="341.600px" height="512.400px" [alt]="tv.name" [title]="tv.name">
+              <!-- <div class="layer">Click For More Details</div> -->
+              <svg width="80" height="80" class="svg-progress">
+                <circle cx="40" cy="40" r="18" stroke="darkgray" stroke-width="3" stroke-opacity="0.1"/>
+                <circle cx="40" cy="40" fill="none" r="18"
+                  [attr.stroke]="
+                    (tv.vote_average | rating) >= 80 ? 'green'
+                  : (tv.vote_average | rating) >= 70 ? '#08de08'
+                  : (tv.vote_average | rating) >= 50 ? 'gold'
+                  : 'tomato'"
+                  stroke-width="3" stroke-linecap="round" pathLength="100"
+                  [attr.stroke-dashoffset]="tv.vote_average | progress"
+                  stroke-dasharray="100" transform-origin="40 40" transform="rotate(-90)"/>
+                <text x="29" y="45" fill="white" class="small"> {{tv.vote_average ? (tv.vote_average | rating)+'%' : 'NR' }} </text>
+              </svg>
+            </div>
+          </a>
+          <div class="text-center d-flex flex-column justify-content-center align-items-center">
+            <a  [routerLink]="['/tvdetails', tv.id]"><h3 class="mt-2 entertainment-title title-hover h5 my-font">{{tv.name}}</h3></a>
+            <div class="d-flex justify-content-center align-items-center bg-card-body rounded-3 mq-overview">
+              <p class="m-0 text-white-50 rounded-3">{{tv.overview | term : 12}}...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>

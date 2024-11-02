@@ -1,0 +1,28 @@
+.episode img{
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+.see-credits{
+  font-size: 16px;
+  font-weight: 500;
+  font-style: italic;
+  color: #666;
+  transition: color .2s;
+  position: relative;
+}
+.see-credits::after{
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1.5px;
+  background-color: #000;
+  transition: width .4s;
+}
+.see-credits:hover{
+  color: #000;
+}
+.see-credits:hover::after{
+  width: 100%;
+}

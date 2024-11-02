@@ -1,0 +1,70 @@
+<nav class="navbar navbar-expand-lg bg-card py-3" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="navbar-brand fs-3 my-font text-white" routerLink="home" ><i class="logo me-2 fa-solid fa-clapperboard"></i>ÇukurWatch</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav m-auto mb-2 mb-lg-0 d-flex gap-2">
+        <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-item">
+          <a class="nav-link fs-5 text-white" routerLink="home" routerLinkActive="active-link">Home</a>
+        </li>
+        <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" (mouseenter)="showMovieDropdown()" (mouseleave)="hideMovieDropdown()" class="nav-item position-relative">
+          <a class="nav-link fs-5 text-white" routerLink="movies" (click)="onSelectMovie('popular')" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }" >Movies</a>
+          @if (isMovieDropdownVisible) {
+            <div class="movie-types bg-body-tertiary text-black my-shadow">
+              <ul class="list-unstyled">
+                <li routerLink="movies/popular" [routerLinkActive]="movieActiveTab === 'popular' ? 'active-link' : '' " (click)="onSelectMovie('popular')" class="py-1 cr">Popular</li>
+                <!-- <li routerLink="movies/now_playing" [routerLinkActive]="movieActiveTab === 'now_playing' ? 'active-link' : ''" (click)="onSelectMovie('now_playing')" class="py-1 cr">Now Playing</li> -->
+                <!-- <li routerLink="movies/upcoming" [routerLinkActive]="movieActiveTab === 'upcoming' ? 'active-link' : ''" (click)="onSelectMovie('upcoming')" class="py-1 cr">Upcoming</li> -->
+                <li routerLink="movies/top_rated" [routerLinkActive]="movieActiveTab === 'top_rated' ? 'active-link' : ''" (click)="onSelectMovie('top_rated')" class="py-1 cr">Top Rated 🔥</li>
+              </ul>
+            </div>
+          }
+        </li>
+        <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" (mouseenter)="showTvDropdown()" (mouseleave)="hideTvDropdown()" class="nav-item position-relative">
+          <a class="nav-link fs-5 text-white" (click)="onSelectTv('popular')" routerLink="tv" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">Tv Shows</a>
+          @if (isTvDropdownVisible) {
+            <div class="tv-types bg-body-tertiary text-black my-shadow">
+              <ul class="list-unstyled">
+                <li routerLink="tv/popular" routerLinkActive="active-link" (click)="onSelectTv('popular')" class="py-1 cr">Popular</li>
+                <!-- <li routerLink="tv/airing_today" (click)="onSelectTv('airing_today')" class="py-1 cr">Airing Today</li> -->
+                <!-- <li routerLink="tv/on_the_air" (click)="onSelectTv('on_the_air')" class="py-1 cr">On Tv</li> -->
+                <li routerLink="tv/top_rated" routerLinkActive="active-link" (click)="onSelectTv('top_rated')" class="py-1 cr">Top Rated 🔥</li>
+              </ul>
+            </div>
+          }
+        </li>
+        <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-item position-relative">
+          <a class="nav-link fs-5 text-white" routerLink="people" routerLinkActive="active-link">People</a>
+        </li>
+      </ul>
+        <input [(ngModel)]="_MoviesService.searchWord" (input)="search()" (blur)="onBlur($event)" (focus)="search()" class="form-control mq-white" type="search..." placeholder="Search" aria-label="Search">
+    </div>
+  </div>
+</nav>
+<div #searchDiv class="search-div ms-auto me-2">
+  <div class="position-relative rounded-3">
+    <ul class="search-list rounded-3 text-black list-unstyled position-absolute w-100">
+      @for (item of _MoviesService.searchArray(); track $index) {
+        <a (click)="blurAgain()" [routerLink]="item?.media_type === 'tv' ? ['/tvdetails', item?.id] : item?.media_type === 'movie' ? ['/moviedetails', item?.id] : ['/person', item?.id]">
+          <li class="p-1 border-bottom d-flex align-items-center">
+            @if (item?.poster_path || item?.profile_path) {
+              <img width="58px" height="88px" class="rounded-2" [src]="item?.poster_path ? imgPrefix + item?.poster_path : imgPrefix + item?.profile_path">
+            }@else {
+              @if (item?.media_type === 'person') {
+                <img width="58px" height="88px" class="rounded-2" src="./assets/images/cast avatar.svg">
+              }@else {
+                <img width="58px" height="88px" class="rounded-2" src="./assets/images/glyphicons-basic-38-picture-grey.svg">
+              }
+            }
+            @if (item?.media_type === 'tv') {<i class="mx-2 fa-solid fa-tv"></i>}
+            @else if (item?.media_type === 'movie') {<i class="mx-2 fa-solid fa-film"></i>}
+            @else if (item?.media_type === 'person') {<i class="mx-2 fa-regular fa-user fa-1x"></i>}
+            <b class="lh-1">{{item?.name?item?.name:item?.title}}</b>
+          </li>
+        </a>
+      }
+    </ul>
+  </div>
+</div>

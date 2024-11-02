@@ -1,0 +1,59 @@
+@if (tvsList.length !==0) {
+  <section class="container-fluid py-4">
+    <div class="row justify-content-center">
+      @if (tvListType === 'popular') { <h1>Popular TV Shows</h1> }
+      @else if (tvListType === 'airing_today') { <h1>TV Shows Airing Today</h1> }
+      @else if (tvListType === 'on_the_air') { <h1>Currently Airing TV Shows</h1> }
+      @else if (tvListType === 'top_rated') { <h1>Top Rated TV Shows</h1> }
+      @for (show of tvsList; track $index) {
+        <div class="col-xl-2 col-lg-3 col-md-4 col-6 g-lg-4 g-md-3 g-2">
+          <div class="bg-card rounded-2 p-2">
+            <a class="position-relative" [routerLink]="['/tvdetails', show.id]">
+              <div class="myCard">
+                <img class="w-100 h-100 rounded-2" [src]="imgPrefix + show.poster_path" onerror="this.src='./assets/images/glyphicons-basic-38-picture-grey.svg'" [alt]="show.name" [title]="show.name">
+                <svg width="80" height="80" class="movies-svg-progress">
+                  <circle cx="40" cy="40" r="18" stroke="darkgray" stroke-width="3" stroke-opacity="0.1"/>
+                  <circle cx="40" cy="40" fill="none" r="18"
+                    [attr.stroke]="
+                      (show.vote_average | rating) >= 80 ? 'green'
+                    : (show.vote_average | rating) >= 70 ? '#08de08'
+                    : (show.vote_average | rating) >= 50 ? 'gold'
+                    : 'tomato'"
+                    stroke-width="3" stroke-linecap="round" pathLength="100"
+                    [attr.stroke-dashoffset]="show.vote_average | progress"
+                    stroke-dasharray="100" transform-origin="40 40" transform="rotate(-90)"/>
+                  <text x="30" y="45" fill="white" class="small"> {{ show.vote_average | rating }}% </text>
+                </svg>
+              </div>
+            </a>
+            <div class="d-flex flex-column">
+              <a class="w-fit" [routerLink]="['/tvdetails', show.id]"><h3 class="m-0 mt-3 movie-title title-hover my-font">{{show.name}}</h3></a>
+              <p class="m-0 text-white-50 my-font movie-date align-self-end">{{show.first_air_date | date :'YYYY'}}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="d-flex mt-5 justify-content-center">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item cr" [class.disabled]="currentPage === 1" (click)="currentPage !== 1 ? changePage(currentPage - 1) : undefined">
+            <a class="page-link" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          @for (page of visiblePages; track $index) {
+            <li class="page-item cr" [class.active]="page === currentPage" (click)="changePage(page)">
+              <a class="page-link m-0">{{page}}</a>
+            </li>
+          }
+          <li class="page-item cr" [class.disabled]="currentPage === totalPages" (click)="currentPage !== totalPages ? changePage(currentPage + 1) :undefined">
+            <a class="page-link" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+}

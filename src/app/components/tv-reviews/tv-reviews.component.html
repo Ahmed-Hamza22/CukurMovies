@@ -1,0 +1,59 @@
+@if (TVReviews.length !==0 && TVDetails) {
+  <div style="min-height: calc(100vh - 168px);" class="bg-white">
+    <div class="R-header">
+      <div class="container-xxl container-fluid d-flex align-items-center gap-3 py-2">
+        <div class="rounded-2">
+          @if (TVDetails.poster_path) {
+            <img class="rounded-2" width="70px" [src]="imgPrefix + TVDetails.poster_path" [alt]="TVDetails.name">
+          }@else {
+            <img class="rounded-2" width="70px" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="TVDetails.name">
+          }
+        </div>
+        <div>
+          <h1 [routerLink]="['/tvdetails' , TVDetails.id]" class="h2 fw-bolder m-0 R-hovering cr">{{TVDetails.name}} ({{TVDetails.first_air_date | date : 'YYYY'}})</h1>
+          <a [routerLink]="['/tvdetails' , TVDetails.id]" class="fs-5 R-hovering" >← Back to main</a>
+        </div>
+      </div>
+    </div>
+      @if (TVReviews) {
+        <div class="container-xxl container-fluid py-4 bg-white text-black">
+          <div class="row">
+            <div class="col-md-12">
+              @for (review of TVReviews; track $index) {
+                <div class="E-review">
+                  <div class="d-flex align-items-center">
+                    <div class="E-review-initial">
+                      @if (review.author_details.avatar_path) {
+                        <img class="w-100" [src]="imgPrefix + review.author_details.avatar_path" [alt]="review.author">
+                      }@else {
+                        <span class="fs-3 text-white">{{review.author_details.username.slice(0,2) | uppercase}}</span>
+                      }
+                    </div>
+                    <div class="d-flex flex-column">
+                      <span class="E-review-user-name">A review by {{review.author | titlecase}}</span>
+                      <div class="d-flex align-items-center">
+                        @if (review.author_details.rating) {
+                          <span class="E-review-percentage badge fw-bolder ms-0">★ {{review.author_details.rating * 10}}%</span>
+                        }@else {
+                          <span class="E-review-percentage badge fw-bolder ms-0">NR</span>
+                        }
+                        <span class="E-review-date">Written by <b>{{review.author | titlecase}}</b> on {{review.created_at | date}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="E-review-text">
+                    @if (review.content.split(" ").length < 100) {
+                      {{review.content}}
+                    }
+                    @else if (review.content.split(" ").length > 100){
+                      {{review.content | term : 100}}....<a class="text-decoration-underline" [href]="review.url" target="_blank">read the rest</a>
+                    }
+                  </p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+  </div>
+}

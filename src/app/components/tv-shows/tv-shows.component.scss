@@ -1,0 +1,50 @@
+.movie-title{
+  color: #fff;
+  min-height: 35px;
+  width: fit-content;
+  font-size: 12px;
+}
+.movie-date{
+  font-size: 11px;
+}
+.title-hover:hover{
+  color: var(--teri-color);
+  transition: color .4s;
+  cursor: pointer;
+}
+.myCard{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--teri-color);
+  transition: all .4s;
+  overflow: hidden;
+}
+.myCard img{
+  transition: all .4s;
+}
+.myCard:hover img{
+  filter: contrast(1.2) saturate(120%);
+}
+.movies-svg-progress {
+  position: absolute;
+  bottom: -10%;
+  right: -5%;
+  z-index: 100;
+  pointer-events: none;
+}
+ul.pagination li a{
+  width: fit-content;
+}
+//===============================================================================
+//================================= media query =================================
+//===============================================================================
+section{
+  overflow-x: hidden;
+}
+@media (max-width: 768px) {
+  ul.pagination li a{
+    width: auto;
+    padding: 8px;
+  }
+}

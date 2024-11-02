@@ -1,0 +1,21 @@
+@if (platformBrowser) {
+  <header  [style.backgroundImage]="currentBackground">
+    @defer (on timer(150ms)) {
+      <swiper-container class="mySwiper pb-4" pagination="false" effect="coverflow" grab-cursor="true" loop="true" centered-slides="true"
+      slides-per-view="auto" coverflow-effect-rotate="50" slide-shadows="true" autoplay="true" autoplay-delay="2000" autoplay-disable-on-interaction="true" coverflow-effect-stretch="0" coverflow-effect-depth="100"
+      coverflow-effect-modifier="1" coverflow-effect-slide-shadows="true">
+        @for (slide of trending | shuffle; track $index) {
+          <swiper-slide>
+            <a [routerLink]="slide?.media_type === 'tv' ? ['/tvdetails', slide?.id] : ['/moviedetails', slide?.id]">
+              @if (slide?.poster_path) {
+                <img [src]="imgPrefix + slide?.poster_path" [alt]="slide?.name ? slide?.name : slide?.title">
+              }@else {
+                <img src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="slide?.name ? slide?.name : slide?.title">
+              }
+            </a>
+          </swiper-slide>
+        }
+      </swiper-container>
+    }
+  </header>
+}

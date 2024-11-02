@@ -1,0 +1,84 @@
+@if (movieVideos.length!==0 && movieDetails) {
+  <div style="min-height: calc(100vh - 168px);" class="bg-white overflow-x-hidden">
+    <div class="V-header">
+      <div class="container-xxl container-fluid d-flex align-items-center gap-3 py-2">
+        <div class="rounded-2">
+          @if (movieDetails.poster_path) {
+            <img class="rounded-2" width="70px" [src]="imgPrefix + movieDetails.poster_path" [alt]="movieDetails.title">
+          }@else {
+            <img class="rounded-2" width="70px" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="movieDetails.title">
+          }
+        </div>
+        <div>
+          <h1 [routerLink]="['/moviedetails' , movieDetails.id]" class="h2 fw-bolder m-0 V-hovering cr">{{movieDetails.title}} ({{movieDetails.release_date | date : 'YYYY'}})</h1>
+          <a [routerLink]="['/moviedetails' , movieDetails.id]" class="fs-5 V-hovering" >← Back to main</a>
+        </div>
+      </div>
+    </div>
+    <div class="container-xxl container-fluid py-4">
+      <div class="row g-sm-3 g-3">
+        <div class="col-lg-3 col-sm-4">
+          <div class="V-tabs">
+            <p class="V-tabs-header">Videos</p>
+            <div class="V-tabs-body">
+              @for (type of videoKeys; track $index) {
+                <div (click)="setMediaActiveTab(type)" class="d-flex V-tab-hover justify-content-between align-items-center cr my-3" [ngClass]="{'V-active': mediaActiveTab === type}">
+                  <span class="p-2">{{type}}</span>
+                  <span class="V-type-length">{{movieTypedVideos[type].length}}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-9 col-sm-8 text-black">
+          <div class="container-fluid">
+            @if (videoKeys.includes(mediaActiveTab)) {
+              @for (vid of movieTypedVideos[mediaActiveTab]; track idx ; let idx = $index ) {
+                <div class="row V-mediaa g-0 mb-4">
+                  <div class="col-lg-5">
+                    <div (click)="showVideo(idx)" class="cr V-video-box">
+                      @if (videoBackgroundUrls[mediaActiveTab] && videoBackgroundUrls[mediaActiveTab][idx]) {
+                        <div class="V-bac" [style.background-image]="videoBackgroundUrls[mediaActiveTab][idx]">  <!-- {'background-image': 'url(' + 'https://i.ytimg.com/vi/' + vid.key + '/hq720.jpg)'} -->
+                          <span class="V-play">▶</span>
+                        </div>
+                      }
+                    </div>  
+                    @if(isVideoVisible && currentVideoIndex === idx){
+                      <div class="media-video-overlay">
+                        <div class="media-video-container mt-5">
+                          <div class="media-top-trailer p-2 text-white">
+                            <p class="m-0 h5">{{vid.name}}</p>
+                            <button class="close-video" (click)="closeVideo()"><i class="fa-solid fa-xmark"></i></button>
+                          </div>
+                          <div>
+                            <iframe allow="autoplay; encrypted-media; picture-in-picture;" allowfullscreen [src]="modifiedURLs[mediaActiveTab][idx]" frameborder="0"></iframe>
+                          </div>
+                        </div>
+                      </div>
+                    }              
+                  </div>
+                  <div class="col-lg-7 d-flex flex-column justify-content-between">
+                    <div class="V-content-body">
+                      <a class="fw-bold fs-5" [href]="'https://www.youtube.com/watch?v='+vid.key" target="_blank">{{vid.name}}</a>
+                      <p class="fs-6">{{vid.type}} • {{vid.channelInfo?.duration}} • {{vid.published_at | date}}</p>
+                    </div>
+                    <div class="V-content-footer">
+                      <a [href]="'https://www.youtube.com/channel/'+vid.channelInfo?.channelId" target="_blank"><i class="fa-brands fa-youtube V-youtube"></i></a>
+                      <a [href]="'https://www.youtube.com/channel/'+vid.channelInfo?.channelId" target="_blank" class="mx-2 text-muted fs-5">{{vid.channelInfo?.channelTitle}}</a>
+                      <!-- <a [href]="'https://www.themoviedb.org/video/channel/'+vid.channelInfo?.channelId" target="_blank" class="mx-2 text-muted fs-5">{{vid.channelInfo?.channelTitle}}</a> -->
+                      <span>
+                        <i class="fa-solid fa-certificate V-cert">
+                          <i class="fa-solid fa-check V-check"></i>
+                        </i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,77 @@
+@if (TVDetails && seasonDetails) {
+  <div style="min-height: calc(100vh - 168px);" class="bg-white overflow-x-hidden">
+    <div class="V-header">
+      <div class="container-xxl container-fluid d-flex align-items-center gap-3 py-2">
+        <div class="rounded-2">
+          @if (seasonDetails.poster_path) {
+            <img class="rounded-2" width="70px" [src]="imgPrefix + seasonDetails.poster_path" [alt]="seasonDetails.name">
+          }@else {
+            <img class="rounded-2" width="70px" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="seasonDetails.name">
+          }
+        </div>
+        <div>
+          <h1 class="h2 fw-bolder m-0">{{seasonDetails.name}} @if(seasonDetails.air_date){<span class="year-text">({{seasonDetails.air_date | date : 'YYYY'}})</span>}</h1>
+          <a [routerLink]="['/tvdetails' , TVDetails.id ,'seasons']" class="fs-5 V-hovering" >← Back to season list</a>
+        </div>
+      </div>
+    </div>
+    <div class="py-2 border-bottom">
+      <div class="container-xxl container-fluid">
+        <div class="row">
+          <div class="col d-flex align-items-center justify-content-between">
+            <div>
+              @if(seasonDetails.season_number > 0) {
+                @if(seasonDetails.season_number == 1) {
+                  @if (haveSpecialSeason) {
+                    <a class="prev" [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', seasonDetails.season_number -1]"> ↩ {{prevSeasonname}} </a>
+                  }
+                }
+                @else{
+                  <a class="prev" [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', seasonDetails.season_number -1]"> ↩ {{prevSeasonname}} </a> <!-- <span class="text-muted">({{seasonDetails.season_number -1}})</span> -->
+                }
+              }
+            </div>
+            <div>
+              @if (TVDetails.number_of_seasons !== seasonDetails.season_number) {
+                <a class="next" [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', seasonDetails.season_number + 1]"> {{nextSeasonname}} ↪ </a> <!-- <span class="text-muted">({{seasonDetails.season_number + 1}})</span> -->
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-xxl container-fluid py-5 text-black">
+      <div class="row">
+        <b class="episode-No mb-2">Episodes <span class="text-muted">{{seasonLength}}</span></b>
+      </div>
+      <div>
+        @for (ep of seasonDetails.episodes; track $index) {
+          <div class="row mq-border episode align-items-center my-shadow mb-5">
+            <div class="col-lg-3 col-md-4">
+                <a [routerLink]="['/tvdetails' , TVDetails.id ,'seasons', seasonDetails.season_number , 'episode' , ep.episode_number]">
+                  @if (ep.still_path) {
+                    <img class="w-100" [src]="imgPrefix + ep.still_path" [alt]="ep.name">
+                  }@else {
+                    <img class="w-100" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="ep.name">
+                  }
+                </a>
+            </div>
+            <div class="col-lg-9 col-md-8 py-2">
+              <div class="d-flex gap-3">
+                <h5 class="episode-name">{{ep.episode_number}}</h5>
+                <div>
+                  <a [routerLink]="['/tvdetails' , TVDetails.id ,'seasons', seasonDetails.season_number , 'episode' , ep.episode_number]" class="m-0 d-block h5 episode-name w-fit">{{ep.name}}</a>
+                  <span class="E-review-percentage badge fw-bolder ms-0 me-2">★ {{ep.vote_average| rating}}%</span>
+                  <span class="episode-date">{{ep.air_date | date : 'MMMM d, y'}} •&nbsp;</span>
+                  <span class="episode-date">{{ep.runtime | time}}</span>
+                </div>
+              </div>
+              <p class="my-2 episode-overview">{{ep.overview}}</p>
+              <a class="see-credits" [routerLink]="['/tvdetails' , TVDetails.id ,'seasons', seasonDetails.season_number , 'episode' , ep.episode_number]">See Episode Credits</a>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

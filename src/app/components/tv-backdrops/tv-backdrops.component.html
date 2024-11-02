@@ -1,0 +1,47 @@
+@if (TVBackdrops.length!==0 && TVDetails) {
+  <div style="min-height: calc(100vh - 168px);" class="bg-white overflow-x-hidden">
+    <div class="V-header">
+      <div class="container-xxl container-fluid d-flex align-items-center gap-3 py-2">
+        <div class="rounded-2">
+          @if (TVDetails.poster_path) {
+            <img class="rounded-2" width="70px" [src]="imgPrefix + TVDetails.poster_path" [alt]="TVDetails.name">
+          }@else {
+            <img class="rounded-2" width="70px" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="TVDetails.name">
+          }
+        </div>
+        <div>
+          <h1 [routerLink]="['/tvdetails' , TVDetails.id]" class="h2 fw-bolder m-0 V-hovering cr">{{TVDetails.name}} ({{TVDetails.first_air_date | date : 'YYYY'}})</h1>
+          <a [routerLink]="['/tvdetails' , TVDetails.id]" class="fs-5 V-hovering" >← Back to main</a>
+        </div>
+      </div>
+    </div>
+    <div class="container-xxl container-fluid py-5">
+      <div class="row gy-4">
+        @for (b of TVBackdrops; track $index) {
+          <div class="col-lg-3 col-6">
+            <div class="B-backdrop-card">
+              <div class="B-backdrop-img">
+                <a [href]="goOriginal + b.file_path" target="_blank"><img [src]="imgPrefix + b.file_path" title="View Original" class="w-100" alt="View Original"></a>
+              </div>
+              <div class="text-black">
+                <div class="B-info d-flex justify-content-between align-items-center border-bottom">
+                  <span>Info</span>
+                  <i class="fa-solid fa-lock text-body-tertiary"></i>
+                </div>
+                <div class="B-backdrop-data">
+                  <b>Size</b>
+                  <a class="B-img-ratio d-flex w-fit" [href]="goOriginal + b.file_path" target="_blank"  title="View Original"><p class="w-fit">{{b.width}}x{{b.height}} <i class="fa-solid fa-check w-fit"></i></p></a>
+                  <b>Language</b>
+                  <p class="m-0">
+                    @if(b.iso_639_1 == null){no language}
+                    @else{ {{b.iso_639_1 | uppercase}} }
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

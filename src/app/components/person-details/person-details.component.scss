@@ -1,0 +1,50 @@
+.biography {
+  position: relative;
+}
+.biography a {
+  color: var(--teri-color);
+  cursor: pointer;
+  text-decoration: none;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+  font-weight: 900;
+}
+.biography a:hover {
+  text-decoration: underline;
+}
+.biography-overview{
+  font-size: 18px;
+  line-height: 25px;
+  position: relative;
+}
+.biography-overview .bbaacckk {
+  content: "";
+  width: 100%;
+  height: 25px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0, #fff 85%);
+  pointer-events: none;
+  z-index: 0;
+}
+.mybody{
+  width: 180px;
+}
+.work-link:hover{
+  color: var(--teri-color);
+}
+swiper-container {
+  width: 100%;
+  height: 100%;
+}
+swiper-slide {
+  background-position: center;
+  background-size: cover;
+}
+swiper-slide img {
+  display: block;
+  width: 100%;
+}

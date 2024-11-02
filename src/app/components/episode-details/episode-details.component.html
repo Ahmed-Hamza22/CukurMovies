@@ -1,0 +1,248 @@
+@if (TVDetails && episodeDetails) {
+  <div style="min-height: calc(100vh - 168px);" class="bg-white overflow-x-hidden">
+    <div class="V-header">
+      <div class="container-xxl container-fluid d-flex align-items-center gap-3 py-2">
+        <div class="row">
+          <div class="col">
+            <a [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', episodeDetails.season_number]" class="fs-5 V-hovering text-white" >← Back to episode list</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="py-2 border-bottom">
+      <div class="container-xxl container-fluid">
+        <div class="row">
+          <div class="col d-flex align-items-center justify-content-between">
+            @if (episodeDetails.episode_number) {
+              <div>
+                @if (episodeDetails.episode_number != seasonEpisodes[0]?.episode_number) {
+                  @if(prevEpisodename){<a class="prev" [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', episodeDetails.season_number , 'episode' , episodeDetails.episode_number - 1]"> ↩ {{prevEpisodename}} <span class="text-muted">({{seasonDetails.season_number}}x{{episodeDetails.episode_number - 1}})</span></a>}
+                }
+              </div>
+              <div>
+                @if (episodeDetails.episode_number !== seasonEpisodes[seasonEpisodes.length-1].episode_number) {
+                  @if(nextEpisodename){<a class="next" [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', episodeDetails.season_number , 'episode' , episodeDetails.episode_number + 1]"> {{nextEpisodename}} <span class="text-muted">({{seasonDetails.season_number}}x{{episodeDetails.episode_number + 1}})</span> ↪ </a>}
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-xxl container-fluid mt-3 text-black">
+      <div class="row">
+        <b class="episode-No mb-2">Episode <span class="text-muted">{{episodeDetails.episode_number}}</span></b>
+      </div>
+        <div class="row episode align-items-center my-shadow mb-5">
+          <div class="col-lg-3 col-md-4">
+            @if (episodeDetails.still_path) {
+              <img  class="w-100" [src]="imgPrefix + episodeDetails.still_path" [alt]="episodeDetails.name">
+            }@else {
+              <img class="rounded-2" width="w-100" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="episodeDetails.name">
+            }
+          </div>
+          <div class="col-lg-9 col-md-8 py-2">
+            <div>
+              <h5 class="m-0 episode-name">{{episodeDetails.name}}</h5>
+              <span class="E-review-percentage badge fw-bolder ms-0 me-2">★ {{episodeDetails.vote_average| rating}}%</span>
+              <span class="episode-date">{{episodeDetails.air_date | date : 'MMMM d, y'}} •&nbsp;</span>
+              <span class="episode-date">{{episodeDetails.runtime | time}}</span>
+            </div>
+            <p class="my-2 episode-overview">{{episodeDetails.overview}}</p>
+            <div>
+              @if (directors.length !== 0) {
+                <p class="m-0 fw-bolder">Directed By : 
+                  @for (d of directors; track $index) {
+                    <span [routerLink]="['/person', d.id]" class="fw-normal cr">{{d.name}}</span>@if (!$last) {, }
+                  }
+                </p>
+              }
+              @if (writers.length !== 0) {
+                <p class="m-0 fw-bolder">Written By : 
+                  @for (w of writers; track $index) {
+                    <span [routerLink]="['/person', w.id]" class="fw-normal cr">{{w.name}}</span>@if (!$last) {, }
+                  }
+                </p>
+              }
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="border-top border-bottom mb-2 text-black">
+      <div class="container-xxl container-fluid">
+        <div class="row">
+          <div class="col py-2">
+            <div class="d-flex justify-content-center gap-4">
+              <p (click)="setMediaActiveTab('cast')" class="p-0 m-0 h5 fw-bold cr" [ngClass]="{'E-active': mediaActiveTab === 'cast'}">Full Cast <span class="text-muted">{{episodeMainCast.length+episodeGuests.length}}</span></p>
+              <p (click)="setMediaActiveTab('crew')" class="p-0 m-0 h5 fw-bold cr" [ngClass]="{'E-active': mediaActiveTab === 'crew'}">Crew <span class="text-muted">{{episodeCrew.length}}</span></p>
+              <p (click)="setMediaActiveTab('videos')" class="p-0 m-0 h5 fw-bold cr" [ngClass]="{'E-active': mediaActiveTab === 'videos'}">Videos <span class="text-muted">{{episodeVideos.length}}</span></p>
+              <p (click)="setMediaActiveTab('images')" class="p-0 m-0 h5 fw-bold cr" [ngClass]="{'E-active': mediaActiveTab === 'images'}">Images <span class="text-muted">{{episodeImages.length}}</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-xxl container-fluid myvh py-4 text-black">
+      @if (mediaActiveTab === 'cast') {
+        <div class="row gx-4">
+          <div class="col-6">
+            <p class="pb-2 h4">Season Regulars <span class="text-black-50">{{episodeMainCast.length}}</span></p>
+            <div class="row">
+              @for (emc of episodeMainCast; track $index) {
+                <div [ngClass]="{'col-lg-6': episodeMainCast.length >= 10}">
+                  <div class="d-flex align-items-center gap-4 mb-2">
+                    <div class="rounded-2">
+                      @if (emc?.profile_path) {
+                        <img [routerLink]="['/person', emc.id]" width="66px" class="rounded-2 cr" [src]="imgPrefix + emc?.profile_path" [alt]="emc?.name">
+                      }
+                      @else {
+                        <img [routerLink]="['/person', emc.id]" style="background-color: rgb(222, 220, 220);" class="rounded-2 cr" width="66px" height="99px" src="./assets/images/cast avatar.svg" [alt]="emc?.name">
+                      }
+                    </div>
+                    <div>
+                      <p [routerLink]="['/person', emc.id]" class="m-0 fw-bolder cr C-name">{{emc?.name}}</p>
+                      <span class="C-character">{{emc.character}}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+          <div class="col-6">
+              <p class="pb-2 h4">Guest Stars <span class="text-black-50">{{episodeGuests.length}}</span></p>
+              @if(episodeGuests.length == 0){
+                <p class="h5">There are no guests added to {{episodeDetails.name}}.</p>
+              }
+            @if (episodeGuests.length !==0) {
+              <div class="row">
+                @for (guest of episodeGuests; track $index) {
+                  <div [ngClass]="{'col-lg-6': episodeGuests.length >= 10}">
+                    <div class="d-flex align-items-center gap-4 mb-2">
+                      <div class="rounded-2">
+                        @if (guest?.profile_path) {
+                          <img [routerLink]="['/person', guest.id]" width="66px" class="rounded-2 cr" [src]="imgPrefix + guest?.profile_path" [alt]="guest?.name">
+                        }
+                        @else {
+                          <img [routerLink]="['/person', guest.id]" style="background-color: rgb(222, 220, 220);" class="rounded-2 cr" width="66px" height="99px" src="./assets/images/cast avatar.svg" [alt]="guest?.name">
+                        }
+                      </div>
+                      <div>
+                        <p [routerLink]="['/person', guest.id]" class="m-0 fw-bolder C-name cr">{{guest?.name}}</p>
+                        <span class="C-character">{{guest.character}}</span>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+      @if (mediaActiveTab === 'crew') {
+        @if(episodeCrew.length == 0){
+          <p class="h5">There are no crew added to {{episodeDetails.name}}.</p>
+        }
+        @if (episodeCrew.length !== 0) {
+        <div class="row">
+          <p class="pb-2 h4">Crew <span class="text-black-50">{{episodeCrew.length}}</span> </p>
+          @for (ono of episodeCrew; track $index) {
+            <div class="col-md-4 col-6">
+              <div class="d-flex align-items-center gap-4 mb-2">
+                <div class="rounded-2">
+                  @if (ono?.profile_path) {
+                    <img [routerLink]="['/person', ono.id]" width="66px" class="rounded-2 cr" [src]="imgPrefix + ono?.profile_path" [alt]="ono?.name">
+                  }
+                  @else {
+                    <img [routerLink]="['/person', ono.id]" style="background-color: rgb(222, 220, 220);" class="rounded-2 cr" width="66px" height="99px" src="./assets/images/cast avatar.svg" [alt]="ono?.name">
+                  }
+                </div>
+                <div>
+                  <p [routerLink]="['/person', ono.id]" class="m-0 fw-bolder cr C-name">{{ono?.name}}</p>
+                  <span class="C-character">{{ono.job}}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+      @if (mediaActiveTab === 'videos') {
+        @if(episodeVideos.length == 0){
+          <p class="h5">There are no videos added to {{episodeDetails.name}}.</p>
+        }
+        @for (vid of episodeVideos; track idx ; let idx = $index ) {
+          <div class="row V-mediaa g-0 mb-4">
+            <div class="col-md-4">
+              <div (click)="showVideo(idx)" class="cr V-video-box">
+                @if (videoBackgroundUrls[idx] && videoBackgroundUrls[idx]) {
+                  <div class="V-bac" [style.background-image]="videoBackgroundUrls[idx]">
+                    <span class="V-play">▶</span>
+                  </div>
+                }
+              </div>  
+              @if(isVideoVisible && currentVideoIndex === idx){
+                <div class="media-video-overlay">
+                  <div class="media-video-container mt-5">
+                    <div class="d-flex justify-content-between align-items-center bg-black text-white p-2">
+                      <p class="m-0 h5">{{vid.name}}</p>
+                      <button class="close-video" (click)="closeVideo()"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div>
+                      <iframe allow="autoplay; encrypted-media; picture-in-picture;" allowfullscreen [src]="modifiedURLs[idx]" frameborder="0"></iframe>
+                    </div>
+                  </div>
+                </div>
+              }              
+            </div>
+            <div class="col-md-8 d-flex flex-column justify-content-between">
+              <div class="V-content-body">
+                <a class="fw-bold fs-5" [href]="'https://www.youtube.com/watch?v='+vid.key" target="_blank">{{vid.name}}</a>
+                <p class="fs-6">{{vid.type}} • {{vid.channelInfo?.duration}} • {{vid.published_at | date}}</p>
+              </div>
+              <div class="V-content-footer">
+                <a [href]="'https://www.youtube.com/channel/'+vid.channelInfo?.channelId" target="_blank"><i class="fa-brands fa-youtube V-youtube"></i></a>
+                <a [href]="'https://www.themoviedb.org/video/channel/'+vid.channelInfo?.channelId" target="_blank" class="mx-2 text-muted fs-5">{{vid.channelInfo?.channelTitle}}</a>
+                <span>
+                  <i class="fa-solid fa-certificate V-cert">
+                    <i class="fa-solid fa-check V-check"></i>
+                  </i>
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      }
+      @if (mediaActiveTab === 'images') {
+        @if(episodeImages.length == 0){
+          <p class="h5">There are no images added to {{episodeDetails.name}}.</p>
+        }
+        <div class="row gy-4">
+          @for (img of episodeImages; track $index) {
+            <div class="col-md-3">
+              <div class="B-backdrop-card">
+                <div class="B-backdrop-img">
+                  <a [href]="goOriginal + img.file_path" target="_blank"><img [src]="imgPrefix + img.file_path" title="View Original" class="w-100" alt="View Original"></a>
+                </div>
+                <div class="text-black">
+                  <div class="B-info d-flex justify-content-between align-items-center border-bottom">
+                    <span>Info</span>
+                    <i class="fa-solid fa-lock text-body-tertiary"></i>
+                  </div>
+                  <div class="B-backdrop-data">
+                    <b>Size</b>
+                    <a class="B-img-ratio d-flex w-fit" [href]="goOriginal + img.file_path" target="_blank"  title="View Original"><p class="w-fit">{{img.width}}x{{img.height}} <i class="fa-solid fa-check w-fit"></i></p></a>
+                    <b>Language</b>
+                    <p class="m-0">
+                      @if(img.iso_639_1 == null){no language}
+                      @else{ {{img.iso_639_1 | uppercase}} }
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

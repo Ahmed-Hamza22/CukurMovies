@@ -1,0 +1,45 @@
+.person-card{
+  border-radius: 8px;
+  box-shadow: 1px 2px 8px rgba(255, 255, 255, .2);
+  padding: 10px 10px 8px 10px;
+  background-color: #05060B;
+}
+.person-img img{
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  transition: all .4s;
+}
+.person-img img:hover{
+  filter: contrast(1.2) saturate(120%);
+}
+.person-footer{
+  padding-top: 10px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  height: 130px;
+  background-color: #05060B;
+  overflow: auto;
+}
+.person-footer p{
+  margin: 0;
+  line-height: 20px;
+}
+.text-white-50{
+  font-size: 17px;
+}
+.person-footer a:hover{
+  color: var(--teri-color) !important;
+  transition: color .3s;
+}
+//===============================================================================
+//================================= media query =================================
+//===============================================================================
+section{
+  overflow-x: hidden;
+}
+@media (max-width: 768px) {
+  ul.pagination li a{
+    width: auto;
+    padding: 8px;
+  }
+}

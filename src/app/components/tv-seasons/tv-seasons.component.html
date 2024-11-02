@@ -1,0 +1,54 @@
+@if (TVDetails) {
+  <div style="min-height: calc(100vh - 168px);"  class="bg-white overflow-x-hidden">
+    <div class="V-header">
+      <div class="container-xxl container-fluid d-flex align-items-center gap-3 py-2">
+        <div class="rounded-2">
+          @if (TVDetails.poster_path) {
+            <img class="rounded-2" width="70px" [src]="imgPrefix + TVDetails.poster_path" [alt]="TVDetails.name">
+          }@else {
+            <img class="rounded-2" width="70px" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="TVDetails.name">
+          }
+        </div>
+        <div>
+          <h1 [routerLink]="['/tvdetails' , TVDetails.id]" class="h2 fw-bolder m-0 V-hovering cr">{{TVDetails.name}} <span class="year-text">({{TVDetails.first_air_date | date : 'YYYY'}})</span></h1>
+          <a [routerLink]="['/tvdetails' , TVDetails.id]" class="fs-5 V-hovering" >← Back to main</a>
+        </div>
+      </div>
+    </div>
+    <div class="py-4">
+      @for (s of TVSeasons; track $index) {
+        <div class="last-season text-black" [ngClass]="{'border-top': !$first,'pt-3':!$first, 'mb-3':!$last}">
+          <div class="container-xxl container-fluid">
+            <div class="row g-0">
+              <div class="col-md-1 col-2">
+                <a [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', s.season_number]">
+                  @if (s.poster_path) {
+                    <img [src]="imgPrefix + s.poster_path" alt="" class="w-100 ls-img">
+                  }@else {
+                    <img src="./assets/images/glyphicons-basic-38-picture-grey.svg" alt="" class="w-100 ls-img">
+                  }
+                </a>
+              </div>
+              <div class="col-md-11 col-10 ps-3 d-flex justify-content-center flex-column">
+                <div>
+                  <a class="w-fit" [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', s.season_number]"> <span class="m-0 h4 mb-1 fw-bolder w-fit">{{s.name}}</span> </a>
+                  <p class="m-0 h6 d-flex align-items-center">
+                    @if (s.vote_average) {<span class="E-review-percentage badge fw-bolder ms-0 me-2">★ {{s.vote_average | rating}}%</span>}
+                    <span class="fw-bolder">{{s.air_date | date : 'YYYY'}} •&nbsp;</span>
+                    <span class="fw-bolder">{{s.episode_count}} Episodes</span>
+                  </p>
+                </div>
+                @if (s.air_date) {
+                  <p class="m-0 py-2 season-premier">
+                    {{'Season ' + s.season_number + ' of The ' + TVDetails.name + ' premiered on ' + (s.air_date | date)}}
+                  </p>
+                }
+                @if (s.overview) {<p class="m-0 py-2 season-overview">{{s.overview}}</p>}
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,50 @@
+@import "../../../../node_modules/swiper/swiper-bundle.min.css";
+
+swiper-container {
+  width: 100%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+swiper-slide {
+  background-position: center;
+  background-size: cover;
+  width: 160px;
+  height: 240px;
+}
+swiper-slide img {
+  display: block;
+  width: 100%;
+}
+header{
+  height: calc(100vh - 84px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-size: 100% 100%;
+  background-position: center center;
+  transition: background-image 2s ease-in;
+}
+.imgshadow{
+  box-shadow: 0 0 16px rgba(0, 135, 162, 0.2);
+}
+
+@media (max-width: 768px) {
+  header{
+    height: 70vh;
+    width: 100%;
+  }
+  swiper-slide {
+    width: 120px;
+    height: 180px;
+  }
+}
+@media (max-width: 500px) {
+  header{
+    height: 55vh;
+    width: 100%;
+  }
+  swiper-slide {
+    width: 100px;
+    height: 150px;
+  }
+}

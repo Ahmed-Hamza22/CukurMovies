@@ -1,0 +1,399 @@
+@if (TVDetails) {
+  <section class="overflow-x-hidden" [ngStyle]="{'background-image': 'url(' + posterPrefix + TVDetails.backdrop_path + ')', 'background-size': 'cover', 'background-repeat': 'repeat','background-position':'left calc((50vw - 170px) - 340px) top'}">
+    <div class="details-layer py-4 px-lg-4">
+      <div class="container-xxl container-fluid">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="E-poster rounded-3">
+              <img class="w-100 rounded-3" [src]="imgPrefix + TVDetails.poster_path" onerror="this.src='./assets/images/glyphicons-basic-38-picture-grey.svg'; this.style='min-width: 300px; width: 300px; height: 450px;'">
+            </div>
+          </div>
+          <div class="col-sm-9">
+            <h2 class="E-title mt-3 mt-sm-0">{{TVDetails.name}} <span>({{TVDetails.first_air_date | date : 'YYYY'}})</span></h2>
+            <div class="d-flex flex-wrap gap-2 align-items-center mt-1">
+              @if (TVCertificate) {<span class="E-certification">{{TVCertificate}}</span>}
+              <span class="h5 mb-0">{{ TVDetails.first_air_date | date : 'dd/MM/YYYY' }} ({{TVCountry}})</span>
+              <ul class="d-flex flex-wrap gap-2 mb-0">
+                <li class="h5 mb-0 me-3"> @for (genre of TVGenres; track $index) {<span>{{genre}}@if (!$last) {, } </span>} </li>
+                @if (TVDetails.episode_run_time[0]) {<li class="h5 mb-0"> EP. {{TVDetails.episode_run_time[0] | time}} </li>}
+              </ul>
+            </div>
+            <div class="d-flex align-items-center my-3">
+              <svg width="66" height="66">
+                <circle cx="33" cy="33" r="30" stroke="darkgray" stroke-width="3" stroke-opacity="0.1"/>
+                <circle cx="33" cy="33" fill="none" r="30"
+                  [attr.stroke]="
+                    (TVDetails.vote_average | rating) >= 80 ? 'green'
+                  : (TVDetails.vote_average | rating) >= 70 ? '#08de08'
+                  : (TVDetails.vote_average | rating) >= 50 ? 'gold'
+                  : 'tomato'"
+                  stroke-width="3" stroke-linecap="round" pathLength="100"
+                  [attr.stroke-dashoffset]="TVDetails.vote_average | progress"
+                  stroke-dasharray="100" transform-origin="33 33" transform="rotate(-90)"/>
+                @if (TVDetails.vote_average) {<text x="15" y="38" fill="white" class="my-font"> {{ TVDetails.vote_average | rating }}% </text>}
+                @else{<text x="15" y="38" fill="white" class="my-font">NR</text>}
+              </svg>
+              <div class="trailer">
+                <span class="ms-2 fs-5 fw-bolder me-5">Users Rating</span>
+                <a class="cr" (click)="showTrailer()" title="Official Trailer On YouTube"> Play Trailer <i class="fa-solid fa-play"></i> </a>
+                @if (isTrailerVisible) {
+                  <div class="video-overlay">
+                    <div class="video-container">
+                      <div class="top-trailer p-2">
+                        <p class="m-0 h5">Play Trailer</p>
+                        <button class="close-video" (click)="closeTrailer()"><i class="fa-solid fa-xmark"></i></button>
+                      </div>
+                      <div>
+                        <iframe allow="autoplay; encrypted-media; picture-in-picture;" allowfullscreen  [src]="TVTrailerVideo" frameborder="0"></iframe>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+            <span class="E-tagline">{{TVDetails.tagline}}</span>
+            <h4 class="py-0 my-1">Overview</h4>
+            <p class="E-overview">{{TVDetails.overview}}</p>
+            <div class="crew">
+              <div class="row g-3 align-items-center">
+                @for (person of TVDetails.created_by; track $index) {
+                  <div class="col-xl-3 col-lg-4 col-md-6 col-6">
+                    <div class="d-flex align-items-center">
+                      <a [routerLink]="['/person', person.id]">
+                        @if (person.profile_path) {
+                          <img class="crew-img" width="50px" [src]="imgPrefix + person.profile_path" [alt]="person.name" [title]="person.name">
+                          }@else {
+                            <img class="crew-img" width="50px" height="81px" src="./assets/images/avatar-profile-picture.jpg" [alt]="person.name">
+                          }
+                      </a>
+                      <div class="d-flex flex-column">
+                        <a class="text-white" [routerLink]="['/person', person.id]"><h6 class="E-person-name gray-hover">{{person.name}}</h6></a>
+                        <p class="m-0">Creator</p>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="overflow-x-hidden py-4 ps-lg-4 bg-white text-black">
+    <div class="container-xxl container-fluid">
+      <div class="row">
+        <div class="col-lg-9">
+          <h4 class="h4 fw-bold">Series Cast</h4>
+          <div class="E-casting">
+            @for (actor of cast.slice(0,10); track $index) {
+              <div class="E-card border shadow shadow-sm">
+                <div class="E-card-body p-0">
+                  <a [routerLink]="['/person', actor.id]">
+                    @if (actor.profile_path) {
+                      <img class="E-cast-img" [src]="imgPrefix + actor.profile_path" [alt]="actor.name" [title]="actor.name">
+                    } @else {
+                      <img class="E-cast-img" src="./assets/images/cast avatar.svg" [alt]="actor.name">
+                    }
+                  </a>
+                </div>
+                <div class="E-card-footer d-flex flex-column">
+                  <a [routerLink]="['/person', actor.id]"><span class="my-font E-actor-name">{{actor.name}}</span></a>
+                  <span class="d-flex flex-wrap">
+                    @for (role of actor.roles; track $index) {
+                      <span class="my-font E-actor-character">{{role.character}}@if(!$last){,<span>&nbsp;</span>} </span>
+                    }
+                  </span>
+                  <span class="E-actor-Episodes">{{ getTotalEpisodes(actor.roles) }}  @if (getTotalEpisodes(actor.roles)==1) {Episode} @else if (getTotalEpisodes(actor.roles)>1) {Episodes} </span>
+                </div>
+              </div>
+            }
+            <div class="d-flex justify-content-center align-items-center E-card border-0">
+              <a [routerLink]="['/tvdetails', TVDetails.id , 'cast']" class="fw-bolder fs-5 cr E-view-click">View More →</a>
+            </div>
+          </div>
+          <div class="mt-3">
+            <a [routerLink]="['/tvdetails', TVDetails.id , 'cast']" class="m-0 h5 fst-italic E-view-click fw-bolder">Full Cast & Crew</a>
+          </div>
+          <h4 class="h4 mt-4 pt-3 pb-3 fw-bold border-top">{{TVDetails.in_production ? 'Current Season' : 'Last Season'}}</h4>
+          <div class="last-season">
+            <div class="row g-0">
+              <div class="col-sm-2">
+                <a [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', lastSeason.season_number]">
+                  @if (lastSeason.poster_path) {
+                    <img [src]="imgPrefix + lastSeason.poster_path" alt="" class="w-100 ls-img">
+                  }@else {
+                    <img src="./assets/images/glyphicons-basic-38-picture-grey.svg" alt="" class="w-100 ls-img bg-body-secondary">
+                  }
+                </a>
+              </div>
+              <div class="col-sm-10 p-3 d-flex justify-content-center flex-column">
+                <div>
+                  <a [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', lastSeason.season_number]" class="m-0 h4 w-fit">{{lastSeason.name}}</a>
+                  <p class="m-0 h6 d-flex align-items-center">
+                    @if (lastSeason.vote_average) {<span class="E-review-percentage badge fw-bolder ms-0 me-2">★ {{lastSeason.vote_average | rating}}%</span>}
+                    <span class="">{{lastSeason.air_date | date : 'YYYY'}} •&nbsp;</span>
+                    <span class="">{{lastSeason.episode_count}} Episodes</span>
+                  </p>
+                </div>
+                <p class="m-0 py-2 ls-overview">
+                  {{ lastSeason.overview ? lastSeason.overview : 'Season ' + lastSeason.season_number + ' of The ' + TVDetails.name + ' premiered on ' + (lastSeason.air_date| date) }}
+                </p>
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-calendar-alt"></i>
+                  @if (TVDetails.last_episode_to_air) {
+                    <a [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', lastSeason.season_number, 'episode', TVDetails.last_episode_to_air.episode_number]" class="le-link">{{TVDetails.next_episode_to_air ? TVDetails.next_episode_to_air.name : TVDetails.last_episode_to_air.name}}</a>
+                  }@else {
+                    <a [routerLink]="['/tvdetails' , TVDetails.id , 'seasons', lastSeason.season_number, 'episode', TVDetails.next_episode_to_air.episode_number]" class="le-link">{{TVDetails.next_episode_to_air.name}}</a>
+                  }
+                  <span>({{lastSeason.season_number}}x{{lastSeason.episode_count}}, {{TVDetails.last_air_date ? TVDetails.last_air_date : TVDetails.next_episode_to_air.air_date | date}})</span>
+                  <span class="E-review-percentage badge fw-bolder ms-0">Season Finale</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3">
+            <a [routerLink]="['/tvdetails', TVDetails.id , 'seasons']" class="m-0 h5 fst-italic E-view-click fw-bolder w-fit">View All Seasons</a>
+          </div>
+          @if (TVOneReviews) {
+            <div class="mt-4 pt-4 d-flex align-items-center border-top">
+              <p class="p-0 m-0 h4 fw-bold me-5">Social</p>
+              <p class="p-0 m-0 h5 fw-bold cr E-active">Reviews <span class="text-muted">{{TVReviews.length}}</span></p>
+            </div>
+          }
+          @defer (on viewport; on timer(5s)) {
+            @if (TVOneReviews) {
+              <div class="E-review">
+                <div class="d-flex align-items-center">
+                  <div class="E-review-initial">
+                    @if (TVOneReviews.author_details.avatar_path) {
+                      <img class="w-100" [src]="imgPrefix + TVOneReviews.author_details.avatar_path" [alt]="TVOneReviews.author">
+                    }@else {
+                      <span class="fs-3 text-white">{{TVOneReviews.author_details.username.slice(0,2) | uppercase}}</span>
+                    }
+                  </div>
+                  <div class="d-flex flex-column">
+                    <span class="E-review-user-name">A review by {{TVOneReviews.author | titlecase}}</span>
+                    <div class="d-flex align-items-center">
+                      @if (TVOneReviews.author_details.rating) {
+                        <span class="E-review-percentage badge fw-bolder ms-0">★ {{TVOneReviews.author_details.rating * 10}}%</span>
+                      }@else {
+                        <span class="E-review-percentage badge fw-bolder ms-0">NR</span>
+                      }
+                      <span class="E-review-date">Written by <b>{{TVOneReviews.author | titlecase}}</b> on {{TVOneReviews.created_at | date}}</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="E-review-text">
+                  @if (TVOneReviews.content.split(" ").length < 50) {
+                    {{TVOneReviews.content}}
+                  }
+                  @else if (TVOneReviews.content.split(" ").length > 50){
+                    {{TVOneReviews.content | term : 50}}....<a class="text-decoration-underline" [href]="TVOneReviews.url" target="_blank">read the rest</a>
+                  }
+                </p>
+              </div>
+            }@else if(TVReviews.length==0){
+              <div class="mt-4 pt-4 d-flex align-items-center border-top">
+                <p class="p-0 m-0 h4 fw-bold me-5">Social</p>
+                <p class="p-0 m-0 h5 fw-bold cr E-active">Reviews <span class="text-muted">{{TVReviews.length}}</span></p>
+              </div>
+              <p style="font-size: 18px;" class="m-0 mt-2 pb-3 border-bottom">We don't have any reviews for {{TVDetails.name}}.</p>
+            }
+            @if (TVReviews.length>1) {
+              <div class="pb-3 mt-3 border-bottom">
+                <a [routerLink]="['/tvdetails', TVDetails.id , 'reviews']" class="m-0 h5 fst-italic E-view-click fw-bolder w-fit">Read All Reviews</a>
+              </div>
+            }
+            }@placeholder {
+            <div class="mt-4 d-flex justify-content-center align-items-center">
+              <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+            </div>
+            }
+            <div class="mt-4 d-flex align-items-center">
+              <p class="p-0 m-0 h4 fw-bold me-lg-5 me-md-3 me-3">Media</p>
+              <div class="d-flex flex-grow-1 justify-content-between align-items-center">
+                <div class="d-flex gap-lg-4 gap-md-2 gap-2">
+                  <p (click)="setMediaActiveTab('videos')" class="p-0 m-0 h5 fw-bold cr mq-tabs" [ngClass]="{'E-active': mediaActiveTab === 'videos'}">Videos <span class="text-muted">{{TVVideos.length}}</span></p>
+                  <p (click)="setMediaActiveTab('backdrops')" class="p-0 m-0 h5 fw-bold cr mq-tabs" [ngClass]="{'E-active': mediaActiveTab === 'backdrops'}">Backdrops <span class="text-muted">{{TVImages?.backdrops?.length}}</span></p>
+                  <p (click)="setMediaActiveTab('posters')" class="p-0 m-0 h5 fw-bold cr mq-tabs" [ngClass]="{'E-active': mediaActiveTab === 'posters'}">Posters <span class="text-muted">{{TVImages?.posters?.length}}</span></p>
+                </div>
+                <div>
+                  @if (mediaActiveTab === 'videos' && TVVideos.length>6) {<a class="h5 fw-bold text-primary mq-tabs" [routerLink]="['/tvdetails', TVDetails.id , 'videos']">View All Videos</a>}
+                  @if (mediaActiveTab === 'backdrops' && TVImages.backdrops.length>10) {<a class="h5 fw-bold text-primary mq-tabs" [routerLink]="['/tvdetails', TVDetails.id , 'backdrops']">View All Backdrops</a>}
+                  @if (mediaActiveTab === 'posters' && TVImages.posters.length>10) {<a class="h5 fw-bold text-primary mq-tabs" [routerLink]="['/tvdetails', TVDetails.id , 'posters']">View All Posters</a>}
+                </div>
+              </div>
+            </div>
+            @if (!(TVVideos.length==0 && TVImages?.backdrops?.length==0 && TVImages?.posters?.length==0)) {
+              <div class="E-media">
+                @if (mediaActiveTab === 'videos') {
+                  <div class="d-flex">
+                    @for (vid of TVReversedVideos ; track idx ; let idx = $index ) {
+                      <div (click)="showVideo(idx)" class="E-media-card cr">
+                        <div [style.background-image]="videoBackgroundUrls[idx]">
+                          <span class="E-play">▶</span>
+                        </div>
+                      </div>
+                      @if(isVideoVisible && currentVideoIndex === idx){
+                        <div class="media-video-overlay">
+                          <div class="media-video-container mt-5">
+                            <div class="media-top-trailer p-2 text-white">
+                              <p class="m-0 h5">{{vid.name}}</p>
+                              <button class="close-video" (click)="closeVideo()"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <div>
+                              <iframe allow="autoplay; encrypted-media; picture-in-picture;" allowfullscreen [src]="modifiedURLs[idx]" frameborder="0"></iframe>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    }
+                    @if (TVVideos.length>6) {
+                      <div class="d-flex justify-content-center align-items-center E-card border-0">
+                        <a [routerLink]="['/tvdetails', TVDetails.id , 'videos']" class="fw-bolder fs-5 cr E-view-click">View More →</a>
+                      </div>
+                    }
+                  </div>
+                }
+                @if (mediaActiveTab === 'backdrops') {
+                  <div class="d-flex">
+                    @for (bac of TVImages.backdrops.slice(0,10); track $index) {
+                      <div class="E-backdrops-card">
+                        <a [href]="imgView + bac.file_path" target="_blank">
+                          <img class="w-100" [src]="imgPrefix + bac.file_path">
+                        </a>
+                      </div>
+                    }
+                    @if (TVImages.backdrops.length>10) {
+                      <div class="d-flex justify-content-center align-items-center E-card border-0">
+                        <a [routerLink]="['/tvdetails', TVDetails.id , 'backdrops']" class="fw-bolder fs-5 cr E-view-click">View More →</a>
+                      </div>
+                    }
+                  </div>
+                }
+                @if (mediaActiveTab === 'posters') {
+                  <div class="d-flex">
+                    @for (pos of TVImages.posters.slice(0,10); track $index) {
+                      <div class="E-poster-card">
+                        <a [href]="imgView + pos.file_path" target="_blank">
+                          <img class="w-100" [src]="imgPrefix + pos.file_path">
+                        </a>
+                      </div>
+                    }
+                    @if (TVImages.posters.length>10) {
+                      <div class="d-flex justify-content-center align-items-center E-card border-0">
+                        <a [routerLink]="['/tvdetails', TVDetails.id , 'posters']" class="fw-bolder fs-5 cr E-view-click">View More →</a>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }@else {
+              <p style="font-size: 18px;" class="m-0 mt-2 pb-3 border-bottom">We don't have any media for {{TVDetails.name}}.</p>
+            }
+            <h4 class="p-0 m-0 h4 fw-bold mt-4 pt-3 border-top">Recommendations</h4>
+            @defer (on viewport; on timer(9s)) {
+              @if (TVRecommendations.length!==0) {
+                <div class="E-recommend pb-1">
+                  @for (rec of TVRecommendations; track $index) {
+                    <a  [routerLink]="['/tvdetails', rec.id]" >
+                      <div class="E-recommend-card">
+                        <div class="E-rec-img">
+                          @if (rec.backdrop_path) {
+                            <img class="w-100 rounded-2" [src]="imgPrefix + rec.backdrop_path" [alt]="rec.name" [title]="rec.name">
+                          } @else {
+                            <img class="E-recommend-img-placeholder rounded-2" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="rec.name">
+                          }
+                          <div class="E-date-layer position-absolute bg-body-secondary p-1">
+                            <div class="d-flex justify-content-between">
+                              <span><i class="fa-solid fa-calendar-days"></i> {{rec.first_air_date | date :'dd/MM/YYYY'}}</span>
+                              <span>{{rec.vote_average | rating}}%</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="E-recommend-footer">
+                          <p style="font-size: 18px;  line-height: 16px" class="m-0 my-2 w-fit">{{rec.name}}</p>
+                        </div>
+                      </div>
+                    </a>
+                  }
+                </div>
+              }@else{
+                <p style="font-size: 18px;">We don't have enough data to suggest any tv shows based on {{TVDetails.name}}. You can help by rating tv shows you've seen.</p>
+              }
+            }@placeholder {
+              <div class="mt-4 d-flex justify-content-center align-items-center">
+                <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+              </div>
+            }
+        </div>
+        <div class="col-lg-3 pt-3">
+          <div class="E-more-data p-1">
+            <div class="E-social mb-3">
+              @if (TVExternalIds?.facebook_id) {<a class="E-icon" [href]="'https://www.facebook.com/'+TVExternalIds?.facebook_id" target="_blank" aria-label="Visit Facebook"><i class="fa-brands fa-facebook"></i></a>}
+              @if (TVExternalIds?.instagram_id) {<a class="E-icon" [href]="'https://www.instagram.com/'+TVExternalIds?.instagram_id" target="_blank" aria-label="Visit Instagram"><i class="fa-brands fa-instagram"></i></a>}
+              @if (TVExternalIds?.twitter_id) {<a class="E-icon" [href]="'https://www.twitter.com/'+TVExternalIds?.twitter_id" target="_blank" aria-label="Visit Twitter"><i class="fa-brands fa-twitter"></i></a>}
+              @if (TVExternalIds?.imdb_id) {<a class="E-icon" [href]="'https://www.imdb.com/title/'+TVExternalIds?.imdb_id" target="_blank" aria-label="Visit IMDB"><i class="fa-brands fa-imdb border-end pe-3"></i></a>}
+              @if (TVDetails.homepage) {<a class="E-icon" [href]="TVDetails.homepage" target="_blank" aria-label="Visit HomePage"><i class="fa-solid fa-link"></i></a>}
+            </div>
+            @if (TVDetails.original_language!=="en") {
+              <div class="original-title">
+                <strong>Original Title</strong>
+                <p>{{TVDetails.original_name}}</p>
+              </div>
+          }
+            <div>
+              <strong>Status</strong>
+              @if (TVDetails.status) {<p>{{TVDetails.status}}</p>}@else {<p>-</p>}
+            </div>
+            <div>
+              <strong class="mb-1">Networks</strong>
+              @if (TVDetails.networks.length!==0) {
+                <div class="d-flex flex-wrap gap-4 mb-3 align-items-center">
+                  @for (net of TVDetails.networks; track $index) {
+                    @if (net.logo_path) {
+                      <img width="80px" [src]="imgPrefix + net.logo_path" [alt]="net.name" [title]="net.name">
+                    }
+                    @if (!net.logo_path){<h6 class="m-0">{{net.name}}</h6>}
+                  }
+                </div>
+              }
+            </div>
+            <div>
+              <strong>Type</strong>
+              @if (TVDetails.type) {<p>{{TVDetails.type}}</p>}
+            </div>
+            <div>
+              <strong>Original Language</strong>
+              <p>{{TVDetails.spoken_languages[0].english_name ? TVDetails.spoken_languages[0].english_name : TVDetails.original_language}}</p>
+            </div>
+            @if (TVPCompanies.length !==0) {
+              <div>
+                <strong>Production Companies</strong>
+                <div class="d-flex flex-wrap gap-4 mt-3">
+                  @for (com of TVPCompanies.slice(0,6); track $index) {
+                    <div class="d-flex justify-content-center align-items-center">
+                      @if (com.logo_path) {<img width="80px" [src]="imgPrefix + com.logo_path" [alt]="com.name" [title]="com.name">}
+                      @if (!com.logo_path){<div class="m-0 E-pro-comp h6" width="70px">{{com.name}}</div>}
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            @if (TVKeywords?.length!==0) {
+              <div class="py-3 border-top border-bottom mt-3">
+                <strong class="d-block">Keywords</strong>
+                @for (key of TVKeywords; track $index) {
+                  <a [routerLink]="['/keyword', key.id, key.name, 'tv', 'page',1]">
+                    <h6 class="badge blue mq-keyword">{{key.name}}</h6>
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+}

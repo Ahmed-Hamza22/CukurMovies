@@ -1,0 +1,67 @@
+@if (movieDetails) {
+  <div class="bg-white">
+    <div class="V-header">
+      <div class="container-xxl container-fluid d-flex align-items-center gap-3 py-2">
+        <div class="rounded-2">
+          @if (movieDetails.poster_path) {
+            <img  class="rounded-2" width="70px" [src]="imgPrefix + movieDetails.poster_path" [alt]="movieDetails.title">
+          }@else {
+            <img  class="rounded-2" width="70px" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="movieDetails.title">
+          }
+        </div>
+        <div>
+          <h1 [routerLink]="['/moviedetails' , movieDetails.id]" class="h2 fw-bolder m-0 V-hovering cr">{{movieDetails.title}} ({{movieDetails.release_date | date : 'YYYY'}})</h1>
+          <a [routerLink]="['/moviedetails' , movieDetails.id]" class="fs-5 V-hovering" >← Back to main</a>
+        </div>
+      </div>
+    </div>
+    <section class="text-black py-4">
+      <div class="container-xxl container-fluid">
+        <div class="row gx-4">
+          <div class="col-lg-3 col-md-4 col-6 borderbox C-border">
+            <p class="pb-2 h4">Cast <span class="text-black-50">{{cast.length}}</span> </p>
+            @for (actor of cast; track $index) {
+              <div class="d-flex align-items-center gap-4 mb-2">
+                <div class="rounded-2">
+                  @if (actor?.profile_path) {
+                    <img [routerLink]="['/person', actor.id]" width="66px" class="rounded-2 cr" [src]="imgPrefix + actor?.profile_path" [alt]="actor?.name">
+                  }
+                  @else {
+                    <img [routerLink]="['/person', actor.id]" style="background-color: rgb(222, 220, 220);" class="rounded-2 cr" width="66px" height="99px" src="./assets/images/cast avatar.svg" [alt]="actor?.name">
+                  }
+                </div>
+                <div>
+                  <p [routerLink]="['/person', actor.id]" class="m-0 fw-bolder cr C-name">{{actor?.name}}</p>
+                  <span class="m-0 C-character">{{actor?.character}}</span>
+                </div>
+              </div>
+            }
+          </div>
+          <div class="col-lg-8 col-md-8 col-6">
+            <p class="pb-2 h4">Crew <span class="text-black-50">{{crew.length}}</span> </p>
+            <div class="row">
+              @for (man of crew; track $index) {
+                <div class="col-lg-4 col-md-6">
+                  <div class="d-flex align-items-center gap-lg-4 gap-md-2 gap-1 mb-2">
+                    <div class="rounded-2">
+                      @if (man?.profile_path) {
+                        <img [routerLink]="['/person', man.id]" width="66px" class="rounded-2 cr" [src]="imgPrefix + man?.profile_path" [alt]="man?.name">
+                      }
+                      @else {
+                        <img [routerLink]="['/person', man.id]" style="background-color: rgb(222, 220, 220);" class="rounded-2 cr" width="66px" height="99px" src="./assets/images/cast avatar.svg" [alt]="man?.name">
+                      }
+                    </div>
+                    <div>
+                      <p [routerLink]="['/person', man.id]" class="m-0 fw-bolder cr C-name">{{man?.name}}</p>
+                      <span class="m-0 C-character">{{man?.job}}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+}

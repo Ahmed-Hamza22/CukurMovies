@@ -1,0 +1,307 @@
+@if (personDetails) {
+  <div class="bg-white text-black">
+    <div class="container-xxl container-fluid py-5">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="person-img rounded-3">
+            @if (personDetails.profile_path) {
+              <img class="w-100 rounded-3" [src]="imgPrefix + personDetails.profile_path" [alt]="personDetails.name" [title]="personDetails.name">
+            }@else {
+              <img class="w-100 rounded-3" src="./assets/images/cast avatar.svg" [alt]="personDetails.name" [title]="personDetails.name">
+            }
+          </div>
+          <div class="E-more-data mt-4 p-1">
+            <div class="E-social mb-3">
+              @if (PersonExternalIds.facebook_id) {<a class="E-icon" [href]="'https://www.facebook.com/'+PersonExternalIds.facebook_id" target="_blank" aria-label="Visit Facebook"><i class="fa-brands fa-facebook"></i></a>}
+              @if (PersonExternalIds.instagram_id) {<a class="E-icon" [href]="'https://www.instagram.com/'+PersonExternalIds.instagram_id" target="_blank" aria-label="Visit Instagram"><i class="fa-brands fa-instagram"></i></a>}
+              @if (PersonExternalIds.twitter_id) {<a class="E-icon" [href]="'https://www.x.com/'+PersonExternalIds.twitter_id" target="_blank" aria-label="Visit Twitter"><i class="fa-brands fa-twitter"></i></a>}
+              @if (PersonExternalIds.youtube_id) {<a class="E-icon" [href]="'https://www.youtube.com/'+PersonExternalIds.youtube_id" target="_blank" aria-label="Visit YouTube"><i class="fa-brands fa-youtube"></i></a>}
+              @if (PersonExternalIds.tiktok_id) {<a class="E-icon" [href]="'https://www.tiktok.com/@'+PersonExternalIds.tiktok_id" target="_blank" aria-label="Visit Tik-Tok"><i class="fa-brands fa-tiktok"></i></a>}
+              @if (PersonExternalIds.imdb_id) {<a class="E-icon" [href]="'https://www.imdb.com/name/'+PersonExternalIds.imdb_id" target="_blank" aria-label="Visit IMDB"><i class="fa-brands fa-imdb border-end pe-3"></i></a>}
+              @if (personDetails.homepage) {<a class="E-icon" [href]="personDetails.homepage" target="_blank" aria-label="Visit HomePage"><i class="fa-solid fa-link"></i></a>}
+            </div>
+            <p class="h4 fw-bolder">Personal Info</p>
+            @if (personDetails.known_for_department) {
+              <div class="original-title">
+                <strong>Known For</strong>
+                <p>{{personDetails.known_for_department}}</p>
+              </div>
+            }
+            @if (personDetails.known_for_department === 'Acting') {
+              <div class="original-title">
+                <strong>Known Credits</strong>
+                <p>{{knownCastCredits}}</p>
+              </div>
+            }@else {
+              <div class="original-title">
+                <strong>Known Credits</strong>
+                <p>{{knownCrewCredits}}</p>
+              </div>
+            }
+            <div>
+              @if (personDetails.gender == 2) {
+                <strong>Gender</strong>
+                <p>Male</p>
+              }@else if (personDetails.gender == 1) {
+                <strong>Gender</strong>
+                <p>Female</p>
+              }@else {<p>-</p>}
+            </div>
+            <div>
+              @if (personDetails.birthday){
+                <strong class="mb-1">Birthday</strong>
+                <p>{{personDetails.birthday | date}} @if (!personDetails.deathday) {({{personDetails.birthday | age}})}</p>
+              }
+            </div>
+            <div>
+              @if (personDetails.deathday){
+                <strong class="mb-1">Day of Death</strong>
+                <p>{{personDetails.deathday | date}} ({{personDetails.birthday | age :personDetails.deathday}})</p>
+              }
+            </div>
+            <div>
+              @if (personDetails.place_of_birth) {
+                <strong>Place of Birth</strong>
+                <p>{{personDetails.place_of_birth}}</p>
+              }
+            </div>
+            @if (personDetails.also_known_as && personDetails.also_known_as.length !== 0) {
+              <div>
+                <strong>Also Known As</strong>
+                <div class="d-flex flex-column">
+                  @for (n of personDetails.also_known_as; track $index) {
+                    <p class="mb-1">{{n}}</p>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+          @if (PersonImages.length !== 0) {
+            <div class="person-images p-1">
+              <div>
+                @defer (on interaction(viewProfiles)) {
+                  <span #viewProfiles class="h5 fw-bolder">Profiles</span>
+                  <swiper-container class="mySwiper" pagination="true" scrollbar-hide="true" pagination-clickable="true" space-between="30" effect="fade">
+                    @for (profile of PersonImages | shuffle ; track $index) {
+                      <swiper-slide>
+                        <img [src]="imgPrefix + profile.file_path" />
+                      </swiper-slide>  
+                    }
+                  </swiper-container>
+                } @placeholder {
+                    <span #viewProfiles class="h5 fw-bolder cr fst-italic text-decoration-underline">click to show profiles</span>
+                  }
+              </div>
+            </div>
+          }
+        </div>
+        <div class="col-md-9">
+          <h1 class="fw-bolder">{{personDetails.name}}</h1>
+          @if (personDetails.biography) {
+            <h4 class="fw-bolder mt-3">Biography</h4>
+            <div class="biography">
+              <p class="biography-overview">
+                {{ isExpanded ? personDetails.biography : personDetails.biography | term : 139 }}
+                @if (!isExpanded && personDetails.biography.split(" ").length > 150) {<span class="bbaacckk d-flex"></span>}
+              </p>
+              @if (personDetails.biography.split(" ").length > 150) {
+                @if (!isExpanded) {
+                  <a href="javascript:void(0)" (click)="toggleText()">
+                    Read More...
+                  </a>
+                }
+              }
+            </div>
+          }
+          <h4 class="fw-bold">Known For</h4>
+          @if (personFamousFor === 'Acting') {
+            <div class="E-casting">
+              @for (kn of knownForCast.slice(0,8); track $index) {
+                <div class="E-card mybody border shadow shadow-sm">
+                  <div class="E-card-body p-0">
+                    <a [routerLink]="kn.media_type === 'tv' ? ['/tvdetails', kn.id] : ['/moviedetails', kn.id]">
+                      @if (kn.poster_path) {
+                        <img class="E-cast-img" [src]="imgPrefix + kn.poster_path" [alt]="kn.name ? kn.name : kn.title" [title]="kn.name ? kn.name : kn.title">
+                      } @else {
+                        <img class="E-cast-img" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="kn.name ? kn.name : kn.title">
+                      }
+                    </a>
+                  </div>
+                  <div class="E-card-footer d-flex flex-column">
+                    <a class="work-link" [routerLink]="kn.media_type === 'tv' ? ['/tvdetails', kn.id] : ['/moviedetails', kn.id]"><p class="m-0 text-center lh-1">{{kn.name ? kn.name.split(" ",5).join(" ") : kn.title?.split(" ",5)?.join(" ")}}</p></a>
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="mt-3 d-flex justify-content-between align-items-center">
+              <h4 class="fw-bold">Acting</h4>
+              <div class="fs-5">
+                <li class="nav-item dropdown list-unstyled">
+                  <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{currentChoosen}}
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li [class.bg-body-tertiary]="currentChoosen == 'All'" (click)="chooseMedia('all')"><a class="dropdown-item cr">All</a></li>
+                    <li [class.bg-body-tertiary]="currentChoosen == 'Movies'" (click)="chooseMedia('movie')"><a class="dropdown-item cr">Movies</a></li>
+                    <li [class.bg-body-tertiary]="currentChoosen == 'Tv'" (click)="chooseMedia('tv')"><a class="dropdown-item cr">TV</a></li>
+                  </ul>
+                </li>
+              </div>
+            </div>
+            <div class="d-flex flex-column p-3 my-shadow border">
+              @for (yearWork of castCredits; track $index) {
+                <div class="border-bottom pt-3">
+                  @for (work of yearWork.works; track $index) {
+                    <div class="d-flex mb-3 gap-5">
+                      @if (yearWork.year === 'Unknown') {<span style="min-width: 41px;" class="h5">{{'-' }}</span>}@else { <span style="min-width: 41px;" class="h5"> {{$first? yearWork.year:''}} </span> }
+                      <div class="d-flex flex-column">
+                        <a class="work-link w-fit" [routerLink]="work.media_type === 'tv' ? ['/tvdetails', work.id] : ['/moviedetails', work.id]">
+                          <h5 class="m-0 fw-bold">{{work.title ? work.title : work.name}}</h5>
+                        </a>
+                        @for (ch of work.characters; track $index) {
+                          @if(ch.character){
+                            <p class="mb-0 ps-3">
+                              @if (work.media_type == 'tv') {
+                                @if (ch.episode_count == 1) {
+                                  ({{ch.episode_count+' episode'}})
+                                }@else{
+                                  ({{ch.episode_count+' episodes'}})
+                                }
+                              } as <strong class="text-body-secondary">{{ch.character}}</strong>
+                            </p>
+                          }
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+            @for (deptWork of crewCredits; track $index) {
+              <div class="mt-3">
+                <h4 class="fw-bold">{{deptWork.department}}</h4>
+              </div>
+              <div class="d-flex flex-column p-3 my-shadow border">
+                <div class="border-bottom pt-3">
+                  @for (work of deptWork.items; track $index) {
+                    <div class="d-flex mb-3 gap-5">
+                      <span style="min-width: 41px;" class="h5"> {{work?.release_date | date : 'YYYY'}} </span>
+                      <div class="d-flex flex-column">
+                        <a class="work-link w-fit" [routerLink]="work.media_type === 'tv' ? ['/tvdetails', work.id] : ['/moviedetails', work.id]">
+                          <h5 class="m-0 fw-bold">{{work.title}}</h5>
+                        </a>
+                        @for (j of work.jobs; track $index) {
+                          @if(j.job){
+                            <p class="mb-0 ps-3">
+                              @if (work.media_type == 'tv' && j.episode_count !==0) {
+                                @if (j.episode_count == 1) {
+                                  ({{j.episode_count+' episode'}})
+                                }@else{
+                                  ({{j.episode_count+' episodes'}})
+                                }
+                              } ... <strong class="text-body-secondary">{{j.job}}</strong>
+                            </p>
+                          }
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>  
+              </div>
+            }
+          }
+          @else{
+            <div class="E-casting">
+              @for (kn of knownForCrew.slice(0,8); track $index) {
+                <div class="E-card mybody border shadow shadow-sm">
+                  <div class="E-card-body p-0">
+                    @if (kn.poster_path) {
+                      <a [routerLink]="kn.media_type === 'tv' ? ['/tvdetails', kn.id] : ['/moviedetails', kn.id]">
+                        <img class="E-cast-img" [src]="imgPrefix + kn.poster_path" [alt]="kn.name ? kn.name : kn.title" [title]="kn.name ? kn.name : kn.title">
+                      </a>
+                    } @else {
+                      <a [routerLink]="kn.media_type === 'tv' ? ['/tvdetails', kn.id] : ['/moviedetails', kn.id]">
+                        <img class="E-cast-img" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="kn.name ? kn.name : kn.title">
+                      </a>
+                    }
+                  </div>
+                  <div class="E-card-footer d-flex flex-column">
+                    <a [routerLink]="kn.media_type === 'tv' ? ['/tvdetails', kn.id] : ['/moviedetails', kn.id]">
+                      <p class="m-0 text-center lh-1">{{kn.name ? kn.name.split(" ",5).join(" ") : kn.title?.split(" ",5)?.join(" ")}}</p>
+                    </a>
+                  </div>
+                </div>
+              }
+            </div>
+            @for (deptWork of crewCredits; track $index) {
+              <div class="mt-3">
+                <h4 class="fw-bold">{{deptWork.department}}</h4>
+              </div>
+              <div class="d-flex flex-column p-3 my-shadow border">
+                <div class="border-bottom pt-3">
+                  @for (work of deptWork.items; track $index) {
+                    <div class="d-flex mb-3 gap-5">
+                      <span style="min-width: 41px;" class="h5"> {{work.release_date | date :'YYYY'}} </span>
+                      <div class="d-flex flex-column">
+                        <a class="work-link w-fit" [routerLink]="work.media_type === 'tv' ? ['/tvdetails', work.id] : ['/moviedetails', work.id] ">
+                          <h5 class="m-0 fw-bold">{{work.title}}</h5>
+                        </a>
+                        @for (j of work.jobs; track $index) {
+                          @if(j.job){
+                            <p class="mb-0 ps-3">
+                              @if (work.media_type == 'tv' && j.episode_count !==0) {
+                                @if (j.episode_count == 1) {
+                                  ({{j.episode_count+' episode'}})
+                                }@else{
+                                  ({{j.episode_count+' episodes'}})
+                                }
+                              } ... <strong class="text-body-secondary">{{j.job}}</strong>
+                            </p>
+                          }
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>  
+              </div>
+            }
+            @if (castCredits && castCredits.length !==0 ) {
+              <div class="mt-3">
+                <h4 class="fw-bold">Acting</h4>
+              </div>
+              <div class="d-flex flex-column p-3 my-shadow border">
+                @for (yearWork of castCredits; track $index) {
+                  <div class="border-bottom pt-3">
+                    @for (work of yearWork.works; track $index) {
+                      <div class="d-flex mb-3 gap-5">
+                        @if (yearWork.year === 'Unknown') {<span style="min-width: 41px;" class="h5">{{'-' }}</span>}@else { <span style="min-width: 41px;" class="h5"> {{$first? yearWork.year:''}} </span> }
+                        <div class="d-flex flex-column">
+                          <a class="work-link w-fit" [routerLink]="work.media_type === 'tv' ? ['/tvdetails', work.id] : ['/moviedetails', work.id] ">
+                            <h5 class="m-0 fw-bold">{{work.title ? work.title : work.name}}</h5>
+                          </a>
+                          @for (ch of work.characters; track $index) {
+                            @if(ch.character){
+                              <p class="mb-0 ps-3">
+                                @if (work.media_type == 'tv') {
+                                  @if (ch.episode_count == 1) {
+                                    ({{ch.episode_count+' episode'}})
+                                  }@else{
+                                    ({{ch.episode_count+' episodes'}})
+                                  }
+                                } as <strong class="text-body-secondary">{{ch.character}}</strong>
+                              </p>
+                            }
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

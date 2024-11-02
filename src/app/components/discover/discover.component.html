@@ -1,0 +1,48 @@
+@if (worksList && worksList.length !==0) {
+  <div class="head">
+    <h2 class="fw-bolder">{{keywordName}}</h2>
+    <h3 class="fw-bolder text-white-50">{{workListLength}} {{listType}}s</h3>
+  </div>
+  <div class="bg-white py-5">
+    <div class="container-xxl container-fluid px-4">
+      @for (en of worksList; track $index) {
+        <div class="row my-shadow my-3">
+          <div class="col-xl-1 col-2 ps-0">
+            <a [routerLink]="en.media_type === 'tv' ? ['/tvdetails', en.id] : ['/moviedetails', en.id]">
+              @if (en.poster_path) {
+                <img [src]="imgPrefix + en.poster_path" [alt]="en.title ? en.title : en.name" class="w-100">
+              }@else {
+                <img src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="en.title ? en.title : en.name">
+              }
+            </a>
+          </div>
+          <div class="col-xl-11 col-10 p-2 text-black">
+            <a class="w-fit d-flex" [routerLink]="en.media_type === 'tv' ? ['/tvdetails', en.id] : ['/moviedetails', en.id]">
+              <h4 class="fw-bold blue w-fit">{{en.title ? en.title : en.name}}</h4>
+            </a>
+            
+            <h6 class="text-muted">{{(en.release_date ? en.release_date : en.first_air_date) | date : 'MMMM d, y'}}</h6>
+            <p>{{en.overview.split('.').join(' ') | term : 60}}.</p>
+          </div>
+        </div>
+      }
+    </div>
+    @if (workListPages > 1) {
+      <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <li class="page-item cr" [class.disabled]="currentPage === 1">
+              <a class="page-link" (click)="changePage(currentPage - 1)">Previous</a>
+            </li>
+            <li class="page-item cr" *ngFor="let page of getDisplayedPages()" [class.active]="currentPage === page">
+              <a class="page-link" (click)="changePage(page)">{{ page }}</a>
+            </li>
+            <li class="page-item cr" [class.disabled]="currentPage === workListPages">
+              <a class="page-link" (click)="changePage(currentPage + 1)">Next</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    }
+  </div>
+}

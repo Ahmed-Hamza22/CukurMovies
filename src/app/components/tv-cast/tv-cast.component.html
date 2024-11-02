@@ -1,0 +1,75 @@
+@if (TVDetails) {
+  <div style="min-height: calc(100vh - 168px);" class="bg-white overflow-x-hidden">
+    <div class="V-header">
+      <div class="container-xxl container-fluid d-flex align-items-center gap-3 py-2">
+        <div class="rounded-2">
+          @if (TVDetails.poster_path) {
+            <img class="rounded-2" width="70px" [src]="imgPrefix + TVDetails.poster_path" [alt]="TVDetails.name">
+          }@else {
+            <img class="rounded-2" width="70px" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="TVDetails.name">
+          }
+        </div>
+        <div>
+          <h1 [routerLink]="['/tvdetails' , TVDetails.id]" class="h2 fw-bolder m-0 V-hovering cr">{{TVDetails.name}} ({{TVDetails.first_air_date | date : 'YYYY'}})</h1>
+          <a [routerLink]="['/tvdetails' , TVDetails.id]" class="fs-5 V-hovering" >← Back to main</a>
+        </div>
+      </div>
+    </div>
+    <section class="text-black py-4">
+      <div class="container-xxl container-fluid">
+        <div class="row gx-4">
+          <div class="col-sm-6">
+            <p class="pb-2 h4">Series Cast <span class="text-black-50">{{cast.length}}</span></p>
+              @for (actor of cast; track $index) {
+                <div class="d-flex align-items-center gap-4 mb-2">
+                  <div class="rounded-2">
+                    @if (actor?.profile_path) {
+                      <img [routerLink]="['/person', actor.id]" width="66px" class="rounded-2 cr" [src]="imgPrefix + actor?.profile_path" [alt]="actor?.name">
+                    }
+                    @else {
+                      <img [routerLink]="['/person', actor.id]" style="background-color: rgb(222, 220, 220);" class="rounded-2 cr" width="66px" height="99px" src="./assets/images/cast avatar.svg" [alt]="actor?.name">
+                    }
+                  </div>
+                  <div>
+                    <p [routerLink]="['/person', actor.id]" class="m-0 fw-bolder C-name cr">{{actor?.name}}</p>
+                    <div>
+                      @for (role of actor.roles; track $index) {
+                          <span class="C-character">{{role.character}}</span>
+                          <span>&nbsp;</span>
+                          <span class="C-Episodes">({{role.episode_count}} {{role.episode_count > 1 ? 'Episodes' : 'Episode'}})</span>
+                          @if(!$last){,<span>&nbsp;</span>}
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+          </div>
+          <div class="col-sm-6">
+            <p class="pb-2 h4">Series Crew <span class="text-black-50">{{crew.length}}</span> </p>
+              @for (man of crew; track $index) {
+                <div class="d-flex align-items-center gap-4 mb-2">
+                  <div class="rounded-2">
+                    @if (man?.profile_path) {
+                      <img [routerLink]="['/person', man.id]" width="66px" class="rounded-2 cr" [src]="imgPrefix + man?.profile_path" [alt]="man?.name">
+                    }
+                    @else {
+                      <img [routerLink]="['/person', man.id]" style="background-color: rgb(222, 220, 220);" class="rounded-2 cr" width="66px" height="99px" src="./assets/images/cast avatar.svg" [alt]="man?.name">
+                    }
+                  </div>
+                  <div>
+                    <p [routerLink]="['/person', man.id]" class="m-0 fw-bolder C-name cr">{{man?.name}}</p>
+                    @for (job of man.jobs; track $index) {
+                      <span class="C-character">{{job.job}}</span>
+                      <span>&nbsp;</span>
+                      <span class="C-Episodes">({{job.episode_count}} {{job.episode_count > 1 ? 'Episodes' : 'Episode'}})</span>
+                      @if(!$last){,<span>&nbsp;</span>}
+                  }
+                  </div>
+                </div>
+              }
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+}

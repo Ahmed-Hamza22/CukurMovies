@@ -9,20 +9,36 @@
         <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-item">
           <a class="nav-link fs-5 text-white" routerLink="home" routerLinkActive="active-link">Home</a>
         </li>
-        <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" (mouseenter)="showMovieDropdown()" (mouseleave)="hideMovieDropdown()" class="nav-item position-relative">
+
+
+
+        <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" (mouseenter)="showMovieDropdown()" (mouseleave)="hideMovieDropdown()" class="nav-item position-relative mq-show-hide">
           <a class="nav-link fs-5 text-white" routerLink="movies" (click)="onSelectMovie('popular')" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }" >Movies</a>
           @if (isMovieDropdownVisible) {
             <div class="movie-types bg-body-tertiary text-black my-shadow">
               <ul class="list-unstyled">
-                <li routerLink="movies/popular" [routerLinkActive]="movieActiveTab === 'popular' ? 'active-link' : '' " (click)="onSelectMovie('popular')" class="py-1 cr">Popular</li>
+                <li routerLink="movies/popular" routerLinkActive="active-link" (click)="onSelectMovie('popular')" class="py-1 cr">Popular</li>
                 <!-- <li routerLink="movies/now_playing" [routerLinkActive]="movieActiveTab === 'now_playing' ? 'active-link' : ''" (click)="onSelectMovie('now_playing')" class="py-1 cr">Now Playing</li> -->
                 <!-- <li routerLink="movies/upcoming" [routerLinkActive]="movieActiveTab === 'upcoming' ? 'active-link' : ''" (click)="onSelectMovie('upcoming')" class="py-1 cr">Upcoming</li> -->
-                <li routerLink="movies/top_rated" [routerLinkActive]="movieActiveTab === 'top_rated' ? 'active-link' : ''" (click)="onSelectMovie('top_rated')" class="py-1 cr">Top Rated 🔥</li>
+                <li routerLink="movies/top_rated" routerLinkActive="active-link" (click)="onSelectMovie('top_rated')" class="py-1 cr">Top Rated 🔥</li>
               </ul>
             </div>
           }
         </li>
-        <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" (mouseenter)="showTvDropdown()" (mouseleave)="hideTvDropdown()" class="nav-item position-relative">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center fs-5 text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Movies
+          </a>
+          <ul class="dropdown-menu">
+            <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"><a class="dropdown-item" routerLink="movies/popular" routerLinkActive="active-link" (click)="onSelectMovie('popular')">Popular</a></li>
+            <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"><a class="dropdown-item" routerLink="movies/top_rated" routerLinkActive="active-link" (click)="onSelectMovie('top_rated')">Top Rated 🔥</a></li>
+          </ul>
+        </li>
+
+
+
+        <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" (mouseenter)="showTvDropdown()" (mouseleave)="hideTvDropdown()" class="nav-item position-relative mq-show-hide">
           <a class="nav-link fs-5 text-white" (click)="onSelectTv('popular')" routerLink="tv" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">Tv Shows</a>
           @if (isTvDropdownVisible) {
             <div class="tv-types bg-body-tertiary text-black my-shadow">
@@ -35,6 +51,21 @@
             </div>
           }
         </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center fs-5 text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Tv Shows
+          </a>
+          <ul class="dropdown-menu">
+            <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"><a class="dropdown-item" routerLink="tv/popular" routerLinkActive="active-link" (click)="onSelectTv('popular')">Popular</a></li>
+            <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"><a class="dropdown-item" routerLink="tv/top_rated" routerLinkActive="active-link" (click)="onSelectTv('top_rated')">Top Rated 🔥</a></li>
+          </ul>
+        </li>
+
+
+
+
+
         <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-item position-relative">
           <a class="nav-link fs-5 text-white" routerLink="people" routerLinkActive="active-link">People</a>
         </li>
@@ -47,7 +78,7 @@
   <div class="position-relative rounded-3">
     <ul class="search-list rounded-3 text-black list-unstyled position-absolute w-100">
       @for (item of _MoviesService.searchArray(); track $index) {
-        <a (click)="blurAgain()" [routerLink]="item?.media_type === 'tv' ? ['/tvdetails', item?.id] : item?.media_type === 'movie' ? ['/moviedetails', item?.id] : ['/person', item?.id]">
+        <a  data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" (click)="blurAgain()" [routerLink]="item?.media_type === 'tv' ? ['/tvdetails', item?.id] : item?.media_type === 'movie' ? ['/moviedetails', item?.id] : ['/person', item?.id]">
           <li class="p-1 border-bottom d-flex align-items-center">
             @if (item?.poster_path || item?.profile_path) {
               <img width="58px" height="88px" class="rounded-2" [src]="item?.poster_path ? imgPrefix + item?.poster_path : imgPrefix + item?.profile_path">

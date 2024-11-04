@@ -25,6 +25,7 @@ section{
 }
 .myCard img{
   transition: all .4s;
+  aspect-ratio: 2 / 3;
 }
 .myCard:hover img{
   filter: contrast(1.2) saturate(120%);

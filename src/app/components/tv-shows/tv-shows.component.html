@@ -10,7 +10,11 @@
           <div class="bg-card rounded-2 p-2">
             <a class="position-relative" [routerLink]="['/tvdetails', show.id]">
               <div class="myCard">
-                <img class="w-100 h-100 rounded-2" [src]="imgPrefix + show.poster_path" onerror="this.src='./assets/images/glyphicons-basic-38-picture-grey.svg'" [alt]="show.name" [title]="show.name">
+                @if (show.poster_path) {
+                  <img class="w-100 rounded-2" [src]="imgPrefix + show.poster_path">
+                }@else {
+                  <img class="w-100" src="./assets/images/glyphicons-basic-38-picture-grey.svg" [alt]="show.name" [title]="show.name">
+                }
                 <svg width="80" height="80" class="movies-svg-progress">
                   <circle cx="40" cy="40" r="18" stroke="darkgray" stroke-width="3" stroke-opacity="0.1"/>
                   <circle cx="40" cy="40" fill="none" r="18"
@@ -22,7 +26,7 @@
                     stroke-width="3" stroke-linecap="round" pathLength="100"
                     [attr.stroke-dashoffset]="show.vote_average | progress"
                     stroke-dasharray="100" transform-origin="40 40" transform="rotate(-90)"/>
-                  <text x="30" y="45" fill="white" class="small"> {{ show.vote_average | rating }}% </text>
+                  <text x="29" y="45" fill="white" class="small"> {{ show.vote_average ? (show.vote_average | rating )+'%' : 'NR' }} </text>
                 </svg>
               </div>
             </a>

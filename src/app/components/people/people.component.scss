@@ -8,6 +8,7 @@
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   transition: all .4s;
+  aspect-ratio: 2 / 3;
 }
 .person-img img:hover{
   filter: contrast(1.2) saturate(120%);

@@ -8,7 +8,7 @@
       @for (en of worksList; track $index) {
         <div class="row my-shadow my-3">
           <div class="col-xl-1 col-2 ps-0">
-            <a [routerLink]="en.media_type === 'tv' ? ['/tvdetails', en.id] : ['/moviedetails', en.id]">
+            <a [routerLink]="listType === 'tv' ? ['/tvdetails', en.id] : ['/moviedetails', en.id]">
               @if (en.poster_path) {
                 <img [src]="imgPrefix + en.poster_path" [alt]="en.title ? en.title : en.name" class="w-100">
               }@else {
@@ -17,7 +17,7 @@
             </a>
           </div>
           <div class="col-xl-11 col-10 p-2 text-black">
-            <a class="w-fit d-flex" [routerLink]="en.media_type === 'tv' ? ['/tvdetails', en.id] : ['/moviedetails', en.id]">
+            <a class="w-fit d-flex" [routerLink]="listType === 'tv' ? ['/tvdetails', en.id] : ['/moviedetails', en.id]">
               <h4 class="fw-bold blue w-fit">{{en.title ? en.title : en.name}}</h4>
             </a>
             

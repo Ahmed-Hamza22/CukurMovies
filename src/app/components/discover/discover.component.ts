@@ -44,6 +44,7 @@ export class DiscoverComponent implements OnInit{
     this._MoviesService.getDiscover(this.keywordId,this.listType,this.currentPage).subscribe({
       next:(res)=>{
         this.worksList = res.results;
+        console.log(this.worksList);
         this.workListLength = res.total_results;
         this.workListPages = res.total_pages;
       }

@@ -22,7 +22,7 @@
                     stroke-width="3" stroke-linecap="round" pathLength="100"
                     [attr.stroke-dashoffset]="movie.vote_average | progress"
                     stroke-dasharray="100" transform-origin="40 40" transform="rotate(-90)"/>
-                  <text x="30" y="45" fill="white" class="small"> {{ movie.vote_average | rating }}% </text>
+                  <text x="29" y="45" fill="white" class="small"> {{ movie.vote_average ? (movie.vote_average | rating)+'%' : 'NR' }} </text>
                 </svg>
               </div>
             </a>
